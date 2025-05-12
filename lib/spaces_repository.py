@@ -2,9 +2,12 @@ from lib.space import Space
 
 # parameters:
 # -- id
-# -- Name
+# -- name
 # -- description
-# -- cost
+# -- ppn (cost)
+# -- user_id (owner)
+
+# -- <<dates_available>>  -- need to add
 
 # functions:
 # -- create
@@ -18,7 +21,7 @@ class spaceRepository():
         self.connection = connection
     
     def create_space(self, space):
-        rows = self.connection.execute('INSERT INTO spaces (name, description, cost) VALUES (%s, %s, %s) RETURNING id', [space.name, space.description, space.cost])
+        rows = self.connection.execute('INSERT INTO spaces (name, description, ppn, user_id) VALUES (%s, %s, %s, %s) RETURNING id', [space.name, space.description, space.ppn, space.user_id])
         row = rows[0]
         space.id = row["id"]
         return space
@@ -27,7 +30,7 @@ class spaceRepository():
         rows = self.connection.execute('SELECT * from spaces')
         spaces = []
         for row in rows:
-            item = Space(row["id"], row["name"], row["description"], row['cost'])
+            item = Space(row["id"], row["name"], row["description"], row['ppn'], row['user_id'])
             spaces.append(item)
         return spaces
     
@@ -35,7 +38,7 @@ class spaceRepository():
         rows = self.connection.execute(
             'SELECT * from spaces WHERE id = %s', [id])
         row = rows[0]
-        return Space(row["id"], row["name"], row["description"], row["cost"])
+        return Space(row["id"], row["name"], row["description"], row["ppn"], row["user_id"])
     
     def remove_space(self, id):
         self.connection.execute('DELETE FROM spaces WHERE id = %s')
