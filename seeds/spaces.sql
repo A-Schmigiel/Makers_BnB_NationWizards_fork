@@ -9,6 +9,7 @@ CREATE TABLE spaces (
     ppn money,
     date_from date,
     date_to date,
+    user_id int,
     constraint fk_spaces foreign key(user_id)
         references users(id)
         on delete cascade
