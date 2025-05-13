@@ -9,6 +9,7 @@ CREATE TABLE requests (
     message_content text,
     space_requested text,
     dates_requested date,
+    accepted boolean,
     constraint fk_request_sender foreign key(request_sender)
         references users(id)
         on delete cascade

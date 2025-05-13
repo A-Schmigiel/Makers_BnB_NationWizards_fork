@@ -10,12 +10,12 @@ from lib.user import User
 # create
 # sign in
 
-class userRepository():
+class UserRepository():
     def __init__(self, connection):
         self.connection = connection
     
     def create_user(self, user):
-        rows = self.connection.execute('INSERT INTO users (username, description, cost) VALUES (%s, %s, %s) RETURNING id', [user.username, user.description, user.cost])
+        rows = self.connection.execute('INSERT INTO users (username, email, password) VALUES (%s, %s, %s) RETURNING id', [user.username, user.email, user.password])
         row = rows[0]
         user.id = row["id"]
         return user
@@ -24,7 +24,7 @@ class userRepository():
         rows = self.connection.execute('SELECT * from users')
         users = []
         for row in rows:
-            item = User(row["id"], row["username"], row["description"], row['cost'])
+            item = User(row["id"], row["username"], row["email"], row['password'])
             users.append(item)
         return users
     
@@ -32,7 +32,7 @@ class userRepository():
         rows = self.connection.execute(
             'SELECT * from users WHERE id = %s', [id])
         row = rows[0]
-        return User(row["id"], row["username"], row["description"], row["cost"])
+        return User(row["id"], row["username"], row["email"], row["password"])
     
     def remove_user(self, id):
         self.connection.execute('DELETE FROM users WHERE id = %s')
