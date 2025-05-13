@@ -10,19 +10,22 @@
         <div class="text-center">  <!--center alignment buttons for navigation -->
         <a href="index.html" button type="button" class="btn btn-dark">Home</button> </a>  
  <div class="row">
-  {% for space in spaces %}
-<div class="col-sm-6">
-    <div class="card">
-    <img src="https://thermohouse.co.uk/wp-content/uploads/2019/04/hero-image.jpg" class="card-img-top" alt="...">
-      <div class="card-body">
-        <h5 class="card-title">{{ space.name }}</h5>
-        <p class="card-text">{{ space.description }}</p>
-        <p class="card-text">£{{ space.price_per_night }} per night</p>
-        <a href="#" class="btn btn-primary">Book now</a>
-      </div>
-    </div>
-  </div>
-  {% endfor %}
+  <form action="/listspace" method="POST">
+    {{ form.csrf_token }}
+    {{ form.space_name.label }}
+    {{ form.space_name }}
+    {{ form.space_description.label }}
+    {{ form.space_description }}
+    {{ form.space_price_per_night.label }}
+    {{ form.space_price_per_night }}
+    {{ form.space_available_from.label }}
+    {{ form.space_available_from }}
+    {{ form.space_available_to.label }}
+    {{ form.space_available_to }}
+    {{ form.submit }}
+    
+</form>
+
 </div>
 </body>
 </html>

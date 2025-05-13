@@ -6,7 +6,7 @@ CREATE TABLE spaces (
     id SERIAL PRIMARY KEY,
     name text,
     description text,
-    price_per_night money,
+    price_per_night numeric(10, 2),
     dates_available DATE ARRAY,
     user_id int,
     constraint fk_spaces foreign key(user_id)

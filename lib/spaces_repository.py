@@ -1,6 +1,6 @@
 import calendar
 import datetime
-from space import Space
+from lib.space import Space
 
 # parameters:
 # -- id
