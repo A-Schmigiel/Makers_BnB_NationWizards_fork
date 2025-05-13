@@ -7,8 +7,9 @@ CREATE TABLE spaces (
     name text,
     description text,
     price_per_night money,
-    date_from date,
-    date_to date,
+    -- date_from date,
+    -- date_to date,
+    dates_available ARRAY[]
     user_id int,
     constraint fk_spaces foreign key(user_id)
         references users(id)

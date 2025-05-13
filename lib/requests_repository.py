@@ -1,4 +1,4 @@
-from lib.request import Request
+from request import Request
 
 # parameters:
 # -- id
