@@ -14,3 +14,11 @@ def test_get_index(page, test_web_address):
 
     # We assert that it has the text "This is the homepage."
     expect(p_tag).to_have_text("This is the homepage.")
+
+
+"""
+When I request a GET method on /spaces
+I get a list of spaces back.
+"""
+def test_get_spaces(page, test_web_address):
+    
