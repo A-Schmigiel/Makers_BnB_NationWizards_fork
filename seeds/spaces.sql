@@ -6,7 +6,7 @@ CREATE TABLE spaces (
     id SERIAL PRIMARY KEY,
     name text,
     description text,
-    ppn money,
+    price_per_night money,
     date_from date,
     date_to date,
     user_id int,
