@@ -41,15 +41,15 @@ class Request():
     def generate_errors(self):
         errors = []
         if self.request_sender == None or self.request_sender == "":
-            errors.append("request_sender can't be blank")
+            errors.append("Request sender can't be blank")
         if self.space_owner == None or self.space_owner == '':
-            errors.append("space_owner can't be blank")
+            errors.append("Space owner can't be blank")
         if self.message_content == None or self.message_content == '':
-            errors.append("message_content can't be blank")
+            errors.append("Message content can't be blank")
         if self.space_requested == None or self.space_requested == '':
-            errors.append("space_requested can't be blank")
+            errors.append("Space requested can't be blank")
         if self.dates_requested == None or self.dates_requested == '':
-            errors.append("dates_requested can't be blank")
+            errors.append("Dates requested can't be blank")
         if self.accepted == None or self.accepted == '':
             errors.append("Accepted can't be blank")
         if len(errors) == 0:

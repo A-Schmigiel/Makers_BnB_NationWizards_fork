@@ -20,7 +20,7 @@ class RequestRepository():
         self.connection = connection
     
     def create_request(self, request):
-        rows = self.connection.execute('INSERT INTO requests (request_sender, space_owner, message_content, space_requested, dates_requested, accepted) VALUES (%s, %s, %s, %s, %s) RETURNING id', [request.request_sender, request.space_owner, request.message_content, request.space_requested, request.dates_requested, request.accepted])
+        rows = self.connection.execute('INSERT INTO requests (request_sender, space_owner, message_content, space_requested, dates_requested, accepted) VALUES (%s, %s, %s, %s, %s, %s) RETURNING id', [request.request_sender, request.space_owner, request.message_content, request.space_requested, request.dates_requested, request.accepted])
         row = rows[0]
         request.id = row["id"]
         return request

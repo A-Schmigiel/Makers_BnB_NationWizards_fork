@@ -21,9 +21,9 @@ class SpaceRepository():
         self.connection = connection
     
     def create_space(self, space):
-        created_date = datetime.datetime.today()
-        space.dates_available = [created_date + datetime.timedelta(days=x) for x in range(90)]
-        rows = self.connection.execute('INSERT INTO spaces (name, description, price_per_night, user_id) VALUES (%s, %s, %s, %s) RETURNING id', [space.name, space.description, space.price_per_night, space.user_id, space.dates_available])
+        # created_date = datetime.datetime.today()
+        # space.dates_available = [created_date + datetime.timedelta(days=x) for x in range(90)]
+        rows = self.connection.execute('INSERT INTO spaces (name, description, price_per_night, user_id, dates_available) VALUES (%s, %s, %s, %s, %s) RETURNING id', [space.name, space.description, space.price_per_night, space.user_id, space.dates_available])
         row = rows[0]
         space.id = row["id"]
         return space
@@ -48,5 +48,3 @@ class SpaceRepository():
     def check_calendar(self):
         pass
 
-
-test_space = Space('Test Space', 'A nice wee testing space to rest after a long journey through the web.', 27.50, 1)

@@ -39,11 +39,11 @@ class Space():
     def generate_errors(self):
         errors = []
         if self.name == None or self.name == "":
-            errors.append("name can't be blank")
+            errors.append("Name can't be blank")
         if self.description == None or self.description == '':
             errors.append("Description can't be blank")
         if self.price_per_night == None or self.price_per_night == '':
-            errors.append("price_per_night can't be blank")
+            errors.append("Price per night can't be blank")
         if self.user_id == None or self.user_id == '':
             errors.append("User ID can't be blank")
         if self.dates_available == None or self.dates_available == '':
