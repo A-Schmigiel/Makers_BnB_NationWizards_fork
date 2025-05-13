@@ -1,14 +1,63 @@
 from lib.users_repository import userRepository
 from lib.user import User
 
-"""
-We can render the index page
-"""
-def test_add_and_get(db_connection):
+def test_create_user(db_connection):
     db_connection.seed("seeds/users.sql")
     repo = userRepository(db_connection)
-    user = repo.all()
-    assert user == [
-        User (1, 'abc@abc.com', 'password1'),
-        User (2, 'def@abc.com', 'password2')
+
+    new_user = User(None, "newuser", "new@gmail.com", "securepw")
+    created_user = repo.create_user(new_user)
+
+    assert created_user.id is not None
+    assert created_user.username == "newuser"
+    assert created_user.email == "new@gmail.com"
+    assert created_user.password == "securepw"
+
+# retrieving the list of all users 
+def test_get_all_users(db_connection):
+    db_connection.seed("seeds/users.sql")
+    repo = userRepository(db_connection)
+
+    users = repo.get_all_users()
+
+    assert users == [
+        User(1, "john_doe", "johndoe@gmail.com", "password123"),
+        User(2, "jane_doe", "janedoe@gmail.com", "password456")
     ]
+
+#Getting the specific user by their id
+def test_get_user_by_id(db_connection):
+    db_connection.seed("seeds/users.sql")
+    repo = userRepository(db_connection)
+
+    user = repo.get_user(1)
+    assert user == User(1, "john_doe", "johndoe@gmail.com", "password123")
+
+
+# When a user is removed from the system it no longer exists
+def test_remove_user(db_connection):
+    db_connection.seed("seeds/users.sql")
+    repo = userRepository(db_connection)
+
+    repo.remove_user(1)
+    users = repo.get_all_users()
+
+    assert users == [User(2, "jane_doe", "janedoe@gmail.com", "password456")]
+
+
+#User can log in if the email and password match
+def test_sign_in_success(db_connection):
+    db_connection.seed("seeds/users.sql")
+    repo = userRepository(db_connection)
+
+    user = repo.sign_in("johndoe@gmail.com", "password123")
+
+    assert user == User(1, "john_doe", "johndoe@gmail.com", "password123")
+
+#User unable to login as the password doesn't match
+def test_sign_in_failure(db_connection):
+    db_connection.seed("seeds/users.sql")
+    repo = userRepository(db_connection)
+
+    user = repo.sign_in("johndoe@gmail.com", "wrongpw")
+    assert user is None
