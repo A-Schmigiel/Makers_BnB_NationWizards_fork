@@ -1,7 +1,7 @@
 import os
 from flask import Flask, request, render_template
 from lib.database_connection import get_flask_database_connection
-from lib.spaces_repository import spaceRepository
+from lib.spaces_repository import SpaceRepository
 # helps manage secret key
 from flask_bcrypt import Bcrypt
 from forms import MyForm 
@@ -49,10 +49,10 @@ if __name__ == '__main__':
 @app.route('/spaces', methods=['GET'])
 def get_spaces():
     connection = get_flask_database_connection(app)                # <-- New code!
-    repository = spaceRepository(connection)                        # <-- New code!
+    repository = SpaceRepository(connection)                        # <-- New code!
     repository.get_all_spaces()
     spaces = repository.get_all_spaces()
-    return "\n".join(str(space) for space in spaces)
+    return render_template('spaces.html', spaces=spaces)
 
 # GET /index
 # Returns the homepage
