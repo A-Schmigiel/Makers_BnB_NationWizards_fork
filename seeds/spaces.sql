@@ -6,9 +6,10 @@ CREATE TABLE spaces (
     id SERIAL PRIMARY KEY,
     name text,
     description text,
-    ppn money,
+    price_per_night money,
     date_from date,
     date_to date,
+    --dates_available Array[]
     user_id int,
     constraint fk_spaces foreign key(user_id)
         references users(id)

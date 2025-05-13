@@ -8,3 +8,9 @@ CREATE TABLE users (
     email text,
     password text
 );
+
+-- Inserting into the TABLE
+
+INSERT INTO users (username, email, password) VALUES 
+('john_doe', 'johndoe@gmail.com', 'password123'),
+('jane_doe', 'janedoe@gmail.com', 'password456');

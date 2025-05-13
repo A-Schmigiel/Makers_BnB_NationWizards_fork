@@ -33,7 +33,7 @@ class User():
         if self.email == None or self.email == '':
             errors.append("email can't be blank")
         if self.password == None or self.password == '':
-            errors.append("email can't be blank")
+            errors.append("password can't be blank")
         if len(errors) == 0:
             return None
         else:
