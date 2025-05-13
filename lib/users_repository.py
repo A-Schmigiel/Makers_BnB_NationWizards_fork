@@ -1,4 +1,4 @@
-from lib.user import User
+from user import User
 
 # parameters:
 # -- id
@@ -10,7 +10,7 @@ from lib.user import User
 # create
 # sign in
 
-class userRepository():
+class UserRepository():
     def __init__(self, connection):
         self.connection = connection
     
