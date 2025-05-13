@@ -1,6 +1,6 @@
 import calendar
 import datetime
-from space import Space
+from lib.space import Space
 
 # parameters:
 # -- id
@@ -49,4 +49,3 @@ class SpaceRepository():
         self.connection.execute('SELECT ARRAY_REMOVE(dates_available, date_booked) from spaces where id = %s', [self.id])
         return None
     
-
