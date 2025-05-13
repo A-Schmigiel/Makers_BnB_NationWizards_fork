@@ -9,5 +9,9 @@ CREATE TABLE users (
     password text
 );
 
-INSERT INTO users (username, email, password) VALUES ('john_doe', 'johndoe@gmail.com', 'password123');
-INSERT INTO users (username, email, password) VALUES ('jane_doe', 'janedoe@gmail.com', 'password456');
+
+-- Inserting into the TABLE
+
+INSERT INTO users (username, email, password) VALUES 
+('john_doe', 'johndoe@gmail.com', 'password123'),
+('jane_doe', 'janedoe@gmail.com', 'password456');
