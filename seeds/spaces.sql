@@ -10,6 +10,7 @@ CREATE TABLE spaces (
     -- date_from date,
     -- date_to date,
     dates_available ARRAY[]
+
     user_id int,
     constraint fk_spaces foreign key(user_id)
         references users(id)
