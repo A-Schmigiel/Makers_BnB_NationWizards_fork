@@ -19,22 +19,26 @@ from flask_login import LoginManager, login_user, login_required, current_user, 
 
 
 
-# Create a new Flask app
+# == INITIALIZATIONS ==
 app = Flask(__name__)
-
-
-# #This is the start of the login and password security content
-# #  Hardcoded secret key 
 app.config['SECRET_KEY'] = '072bb84cfdff08af0c1d8cd67f3be65bba12485bf0e9ea4dae5a49dc83260663'
-
 bcrypt = Bcrypt(app)
+login_manager = LoginManager()
+login_manager.init_app(app)
+@login_manager.user_loader
+def load_user(user_id):
+    connection = get_flask_database_connection(app)
+    repository = UserRepository(connection)
+    return repository.get_user(user_id)
+
+# == SIGN UP / HOMEPAGE ROUTE ==
 
 @app.route('/', methods=['GET', 'POST'])
 def index():
     form = MyForm()
     if form.validate_on_submit():
         username = form.username.data
-        email = form.email.data
+        # email = form.email.data
         password = form.password.data
 
         hashed_password = bcrypt.generate_password_hash(password).decode('utf-8')
@@ -45,27 +49,14 @@ def index():
             match_message = "Password hash did not match input."
         return (
             f'Hello, {username}!<br>'
-            f'Email: {email}<br>'
+            # f'Email: {email}<br>'
             f'{match_message}'
         )
     
     return render_template('index.html', form=form)
 
-if __name__ == '__main__':
-    app.run(debug=True)
-#This is the end of the block for the login and password security content
 
-
-#LOGIN CODE BEGINS HERE:
-
-login_manager = LoginManager()
-login_manager.init_app(app)
-
-@login_manager.user_loader
-def load_user(user_id):
-    connection = get_flask_database_connection(app)
-    repository = UserRepository(connection)
-    return repository.get_user(user_id)
+# == LOGIN / LOGOUT ROUTES ==:
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
@@ -77,15 +68,12 @@ def login():
         connection = get_flask_database_connection(app)
         repository = UserRepository(connection)
         user = repository.get_user_by_username(username)
-
         if user and bcrypt.check_password_hash(user.password, password):
             login_user(user)
             return redirect('/spaces')
         else:
             return render_template('login.html', form=form, error="Invalid credentials")
-
     return render_template('login.html', form=form)
-
 
 @app.route('/logout')
 @login_required
@@ -99,7 +87,8 @@ def logout():
     else:
         return render_template('login.html', error="User not found")
 
-# == Your Routes Here ==
+# == SPACES/LISTSPACES/REQUESTS ROUTES ==
+
 @app.route('/spaces', methods=['GET'])
 @login_required
 def get_spaces():
@@ -111,9 +100,9 @@ def get_spaces():
 
 
 @app.route('/listspace', methods=['GET', 'POST'])
-@login_required
-# This route is for listing spaces
 def list_space():
+    if not current_user.is_authenticated:
+        return app.login_manager.unauthorized()
     form = ListSpacesForm()
     if form.validate_on_submit():
         connection = get_flask_database_connection(app)
@@ -123,12 +112,12 @@ def list_space():
             name=form.space_name.data,
             description=form.space_description.data,
             price_per_night=form.space_price_per_night.data,
-            user_id=current_user.id,  
-            dates_available=[form.space_available_from.data, form.space_available_to.data]
+            user_id=current_user.id
         )
         repository.create_space(space)
         return redirect('/spaces')
     return render_template('listspace.html', form=form)
+
         
 @app.route('/spaces/<int:id>', methods=['GET'])
 @login_required

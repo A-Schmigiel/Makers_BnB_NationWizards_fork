@@ -55,7 +55,7 @@
 
  <div class="row">
   <form action="/listspace" method="POST">
-    {{ form.csrf_token }}
+    §
     {{ form.space_name.label }}
     {{ form.space_name }}
     {{ form.space_description.label }}
@@ -146,7 +146,7 @@
             <div class="form-container">
                 <h2 class="text-center mb-4">List Your Space</h2>
                 <form method="POST" action="http://localhost:5001/listspace">
-                    {{ form.hidden_tag() }}
+                    {{ form.csrf_token }}
                     <div class="form-group">
                         <label for="space_name">{{ form.space_name.label }}</label>
                         {{ form.space_name(class="form-control") }}
