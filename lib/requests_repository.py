@@ -1,4 +1,5 @@
 from lib.request import Request
+import datetime
 
 # parameters:
 # -- id
@@ -33,6 +34,22 @@ class RequestRepository():
             requests.append(item)
         return requests
     
+    def get_all_sent_requests(self, user_id):
+        rows = self.connection.execute('SELECT * from requests WHERE request_sender = %s', [user_id])
+        requests = []
+        for row in rows:
+            item = Request(row["id"], row["request_sender"], row["space_owner"], row['message_content'], row["space_requested"], row["dates_requested"], row["accepted"])
+            requests.append(item)
+        return requests
+    
+    def get_all_recieved_requests(self, user_id):
+        rows = self.connection.execute('SELECT * from requests WHERE space_owner = %s', [user_id])
+        requests = []
+        for row in rows:
+            item = Request(row["id"], row["request_sender"], row["space_owner"], row['message_content'], row["space_requested"], row["dates_requested"], row["accepted"])
+            requests.append(item)
+        return requests
+    
     def get_request(self, id):
         rows = self.connection.execute(
             'SELECT * from requests WHERE id = %s', [id])
@@ -40,5 +57,5 @@ class RequestRepository():
         return Request(row["id"], row["request_sender"], row["space_owner"], row['message_content'], row["space_requested"], row["dates_requested"], row["accepted"])
     
     def remove_request(self, id):
-        self.connection.execute('DELETE FROM requests WHERE id = %s')
-
+        self.connection.execute('DELETE FROM spaces WHERE id = %s', [self.id])
+        return None 
