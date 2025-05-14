@@ -68,39 +68,34 @@
       padding: 10px;
       font-size: 16px;
       width: 300px;
-      border: 1px solid #ffffff;
+      border: 1px solid #ccc;
       border-radius: 5px;
       box-shadow: 0 2px 4px rgba(0,0,0,0.1);
     }
   </style>
-  </head>
-  <body>
-    <body>
-    <div
-></div>
-<div class="bg-image">
-    <div class="bg-overlay mx-auto col-md-8 col-lg-6">
-  
-    <div class="form-container">
-        <h2 class="text-center mb-4">Log in</h2>
-        <form>
-  
-            <div class="form-group">
-                <label for="username">Username</label>
-                <input type="text" class="form-control" id="username" placeholder="Enter username">
-                </div>
-                <div class="form-group">
-                <label for="password_1">Password</label>
-                <input type="text" class="form-control" id="password" placeholder="Enter Password">
-                </div> 
-      
-            </div>
-            <a href="spaces.html" button type="button" class="btn btn-dark">Log in</button> </a>
-        </form>
-    </div>
-    </div>
+</head>
+<body>
+  <div class="form-container">
+        <h2 class="text-center mb-4">Login</h2>
+        <form method="POST">
+  {{ form.hidden_tag() }}
+  {% if current_user.is_authenticated %}
+  {% endif %}
+  <div class="form-group">
+    <label for="username">Username</label>
+    {{ form.username(class="form-control") }}
   </div>
+  <div class="form-group">
+    <label for="password">Password</label>
+    {{ form.password(class="form-control") }}
+  </div>
+  <button type="submit" class="btn btn-dark">Log in</button>
+</form>
+    </div>
+    <script src="[https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js](https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js)"></script>
+</body>
 
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    </body>
+</html>
+
+</body>
 </html>

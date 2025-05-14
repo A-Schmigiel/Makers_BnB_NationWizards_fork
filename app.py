@@ -5,6 +5,7 @@ import datetime
 import calendar
 # helps manage secret key
 from flask_bcrypt import Bcrypt
+
 from forms import MyForm, ListSpacesForm
 # repositories
 from lib.spaces_repository import SpaceRepository
@@ -14,6 +15,10 @@ from lib.users_repository import UserRepository
 from lib.space import Space
 from lib.request import Request
 from lib.user import User
+#login stuff
+from flask_login import LoginManager, login_user, login_required, current_user, logout_user
+
+
 
 
 
@@ -27,36 +32,122 @@ app.config['SECRET_KEY'] = '072bb84cfdff08af0c1d8cd67f3be65bba12485bf0e9ea4dae5a
 
 # bcrypt = Bcrypt(app)
 
-# @app.route('/', methods=['GET', 'POST'])
-# def index():
-#     form = MyForm()
-#     if form.validate_on_submit():
-#         username = form.username.data
-#         email = form.email.data
-#         password = form.password.data
+@app.route('/', methods=['GET', 'POST'])
+def index():
+    form = MyForm()
+    if form.validate_on_submit():
+        username = form.username.data
+        email = form.email.data
+        password = form.password.data
 
-#         hashed_password = bcrypt.generate_password_hash(password).decode('utf-8')
+        hashed_password = bcrypt.generate_password_hash(password).decode('utf-8')
 
-#         if bcrypt.check_password_hash(hashed_password, password):
-#             match_message = "Password hash matches input password."
-#         else:
-#             match_message = "Password hash did not match input."
-#         return (
-#             f'Hello, {username}!<br>'
-#             f'Email: {email}<br>'
-#             f'{match_message}'
-#         )
+        if bcrypt.check_password_hash(hashed_password, password):
+            match_message = "Password hash matches input password."
+        else:
+            match_message = "Password hash did not match input."
+        return (
+            f'Hello, {username}!<br>'
+            f'Email: {email}<br>'
+            f'{match_message}'
+        )
     
-#     return render_template('index.html', form=form)
+    return render_template('index.html', form=form)
 
-# if __name__ == '__main__':
-#     app.run(debug=True)
-# This is the end of the block for the login and password security content
+if __name__ == '__main__':
+    app.run(debug=True)
+#This is the end of the block for the login and password security content
 
+
+#LOGIN CODE BEGINS HERE:
+
+login_manager = LoginManager()
+login_manager.init_app(app)
+
+@login_manager.user_loader
+def load_user(user_id):
+    connection = get_flask_database_connection(app)
+    repository = UserRepository(connection)
+    return repository.get_user(user_id)
+
+@app.route('/login', methods=['GET', 'POST'])
+def login():
+    form = MyForm()
+    if form.validate_on_submit():
+        username = form.username.data
+        password = form.password.data
+
+        connection = get_flask_database_connection(app)
+        repository = UserRepository(connection)
+        user = repository.get_user_by_username(username)
+
+        if user and bcrypt.check_password_hash(user.password, password):
+            login_user(user)
+            return redirect('/spaces')
+        else:
+            return render_template('login.html', form=form, error="Invalid credentials")
+
+    return render_template('login.html', form=form)
+
+
+@app.route('/logout')
+@login_required
+def logout():
+    connection = get_flask_database_connection(app)
+    repository = UserRepository(connection)
+    user = repository.get_user(current_user.id)
+    if user:
+        logout_user()
+        return redirect('/index')
+    else:
+        return render_template('login.html', error="User not found")
+
+#LOGIN CODE BEGINS HERE:
+
+login_manager = LoginManager()
+login_manager.init_app(app)
+
+@login_manager.user_loader
+def load_user(user_id):
+    connection = get_flask_database_connection(app)
+    repository = UserRepository(connection)
+    return repository.get_user(user_id)
+
+@app.route('/login', methods=['GET', 'POST'])
+def login():
+    form = MyForm()
+    if form.validate_on_submit():
+        username = form.username.data
+        password = form.password.data
+
+        connection = get_flask_database_connection(app)
+        repository = UserRepository(connection)
+        user = repository.get_user_by_username(username)
+
+        if user and bcrypt.check_password_hash(user.password, password):
+            login_user(user)
+            return redirect('/spaces')
+        else:
+            return render_template('login.html', form=form, error="Invalid credentials")
+
+    return render_template('login.html', form=form)
+
+
+@app.route('/logout')
+@login_required
+def logout():
+    connection = get_flask_database_connection(app)
+    repository = UserRepository(connection)
+    user = repository.get_user(current_user.id)
+    if user:
+        logout_user()
+        return redirect('/index')
+    else:
+        return render_template('login.html', error="User not found")
 
 # == Your Routes Here ==
-
 @app.route('/spaces', methods=['GET'])
+@login_required
 def get_spaces():
     connection = get_flask_database_connection(app) 
     repository = SpaceRepository(connection)        
@@ -66,6 +157,8 @@ def get_spaces():
 
 
 @app.route('/listspace', methods=['GET', 'POST'])
+@login_required
+# This route is for listing spaces
 def list_space():
     form = ListSpacesForm()
     if form.validate_on_submit():
@@ -76,21 +169,26 @@ def list_space():
             name=form.space_name.data,
             description=form.space_description.data,
             price_per_night=form.space_price_per_night.data,
-            user_id=1,  # Assuming user_id is 1 for this example
+            user_id=current_user.id,  
+            dates_available=[form.space_available_from.data, form.space_available_to.data]
         )
         repository.create_space(space)
         return redirect('/spaces')
     return render_template('listspace.html', form=form)
         
 @app.route('/spaces/<int:id>', methods=['GET'])
+@login_required
+# This route is for showing a specific space
 def show_listing(id):
     connection = get_flask_database_connection(app)
     repository = SpaceRepository(connection)
     space = repository.get_space(id)
-    space.dates_booked = [i.isoformat() for i in space.dates_booked]
+    # valid_dates = [i.isoformat() for i in space.dates_available]                # <<=== still working on a solution for full integration of dates list into calendar
     return render_template('booking.html', space=space)
 
 @app.route('/spaces/<int:id>', methods=['POST'])
+@login_required
+# This route is for requesting a booking
 def request_booking(id):
     connection = get_flask_database_connection(app)
     space_repository = SpaceRepository(connection)
@@ -106,6 +204,7 @@ def request_booking(id):
         return render_template('booking.html', request=new_request, errors=new_request.generate_errors()), 400
     request = request_repository.create_request(new_request)
     return redirect(f"/requests")
+
 
 
 
