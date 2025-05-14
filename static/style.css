@@ -1,3 +1,41 @@
 body {
     font-size: 18px;
+    text-align: center;
+}
+
+#booking-page {
+    padding: 20px;
+    font-family: 'Open Sans', sans-serif;
+    background-image: url('https://architecturesstyle.b-cdn.net/wp-content/uploads/2022/10/Hobbit-House.webp');
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    background-size: cover;
+}
+
+#page-content {
+    margin-top: 0px;
+    margin-bottom: auto;
+    margin-right: 0px;
+    margin-left: auto;
+    width: 40%;
+    background-color: #baca81;
+    color: #373a08d5;
+    font-weight: bold;
+    border-radius: 10px;
+    padding: 5px;
+}
+
+#request-message {
+    margin-bottom: 10px;
+    width: 40%;
+    background-color: rgba(223, 238, 170, 0.925);
+    color: #011d07b4;
+    font-weight: bold;
+    border-radius: 25px;
+    padding: 20px;
+}
+
+#daterange {
+    background-color: rgba(223, 238, 170, 0.925);
+    border-radius: 5px;
 }

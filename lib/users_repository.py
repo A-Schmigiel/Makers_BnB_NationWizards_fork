@@ -10,7 +10,7 @@ from lib.user import User
 # create
 # sign in
 
-class userRepository():
+class UserRepository():
     def __init__(self, connection):
         self.connection = connection
     
@@ -46,3 +46,5 @@ class userRepository():
             return None
         row = rows[0]
         return User(row["id"], row["username"], row["email"], row["password"])
+    
+    
