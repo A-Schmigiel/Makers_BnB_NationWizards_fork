@@ -1,10 +1,19 @@
 import os
-from flask import Flask, request, render_template
+from flask import Flask, request, render_template, redirect
 from lib.database_connection import get_flask_database_connection
-from lib.spaces_repository import SpaceRepository
+import datetime
+import calendar
 # helps manage secret key
 from flask_bcrypt import Bcrypt
-from forms import MyForm 
+from forms import MyForm
+# repositories
+from lib.spaces_repository import SpaceRepository
+from lib.requests_repository import RequestRepository
+from lib.users_repository import UserRepository
+# classes
+from lib.space import Space
+from lib.request import Request
+from lib.user import User
 
 
 
@@ -49,11 +58,37 @@ app = Flask(__name__)
 
 @app.route('/spaces', methods=['GET'])
 def get_spaces():
-    connection = get_flask_database_connection(app)                # <-- New code!
-    repository = SpaceRepository(connection)                        # <-- New code!
+    connection = get_flask_database_connection(app) 
+    repository = SpaceRepository(connection)        
     repository.get_all_spaces()
     spaces = repository.get_all_spaces()
     return render_template('spaces.html', spaces=spaces)
+
+@app.route('/spaces/<int:id>', methods=['GET'])
+def show_listing(id):
+    connection = get_flask_database_connection(app)
+    repository = SpaceRepository(connection)
+    space = repository.get_space(id)
+    # valid_dates = [i.isoformat() for i in space.dates_available]                # <<=== still working on a solution for full integration of dates list into calendar
+    return render_template('booking.html', space=space)
+
+@app.route('/spaces/<int:id>', methods=['POST'])
+def request_booking(id):
+    connection = get_flask_database_connection(app)
+    space_repository = SpaceRepository(connection)
+    request_repository = RequestRepository(connection)
+    space = space_repository.get_space(id)
+    request_sender = 1                                      # <====  current_user.id??  requires login records? -- will need rephrased, but this allows for testing and access in the meantime.
+    space_owner = space.user_id
+    message_content = request.form["request_message"]
+    space_requested = space.id
+    dates_requested = request.form["daterange"]
+    new_request = Request(None, request_sender, space_owner, message_content, space_requested, dates_requested)
+    if not new_request.is_valid():
+        return render_template('booking.html', request=new_request, errors=new_request.generate_errors()), 400
+    request = request_repository.create_request(new_request)
+    return redirect(f"/requests")
+
 
 # GET /index
 # Returns the homepage

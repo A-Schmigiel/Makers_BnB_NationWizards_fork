@@ -3,3 +3,8 @@ psycopg==3.1.18
 pytest==8.1.1
 pytest-playwright==0.4.4
 pytest-xprocess==0.23.0
+
+bcrypt==4.3.0
+flask-bcrypt==1.0.1
+Flask-WTF==1.2.2
+wtforms==3.2.1
