@@ -46,7 +46,8 @@ class UserRepository():
         return User(row["id"], row["username"], row["email"], row["password"])
     
     def remove_user(self, id):
-        self.connection.execute('DELETE FROM users WHERE id = %s', [id])
+        self.connection.execute('DELETE FROM spaces WHERE id = %s', [self.id])
+        return None
 
     # Adding sign in method
     def sign_in(self, email, password):
