@@ -11,6 +11,5 @@ class ListSpacesForm(FlaskForm):
     space_name = StringField('Name', validators=[DataRequired()])
     space_description = StringField('Description', validators=[DataRequired()])
     space_price_per_night = FloatField('Price Per Night', validators=[DataRequired()])
-    space_available_from = DateField('Available From', validators=[DataRequired()])
-    space_available_to = DateField('Available To', validators=[DataRequired()])
     submit = SubmitField('Submit')
+
