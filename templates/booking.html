@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>MakersBnB</title>
+        <link rel="stylesheet" href="/static/style.css">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.10.0/css/bootstrap-datepicker.standalone.min.css">
+    </head>
+
+    <body id="booking-page">
+        <div class="container" id="page-content">
+            <div class="nav-buttons">
+                <div class="text-center">
+                    <a href="/index" button type="button" class="btn btn-dark">Home</button></a>
+                    <a href="/spaces" button type="button" class="btn btn-dark">Listings</button></a>
+                    <a href="/requests" button type="button" class="btn btn-dark">Requests</button></a>
+                </div>
+            </div>
+            <h1 class="t-name" align="center">Enjoy your next holiday at {{space.name}}!</h1>
+            <div class="container">
+                <div class="row">
+                    <div class="col-sm-4 col-md-4" align="center">  
+                        <div class="panel panel-default">
+                            <div class="panel-body">
+                                <div class="input-group">
+                                    <form accept-charset="UTF-8" action='/requests' method='POST'>
+                                        <label for="daterange">Plan your stay today:  </label>
+                                        <input type="daterange" name="daterange" id="daterange"> <br> <br>
+                                        <textarea class="form-control counted" id="request-message" placeholder="Say hi to {{space.name}}'s host!" rows="5" align="center"></textarea><br>
+                                        <input type="submit" value="Send Request!" style="background-color: #ffdfb4ec; border-radius: 5px; width: 30%;">
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </body>
+</html>
+<script type="text/javascript" src="https://cdn.jsdelivr.net/jquery/latest/jquery.min.js"></script>
+<script type="text/javascript" src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
+<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
+<script>
+    // var invalid_dates={'17-5-2025','22-5-2025'}
+    $(".daterangepicker").show();
+    $(function () {
+        $('input[name="daterange"]').daterangepicker({
+            opens: 'center',
+            minDate: new Date(),
+            "locale": {
+                format: 'D-M-YYYY'
+            },
+            isInvalidDate: (date) => {
+                // if (invalid_dates.includes(date)) {
+                //     return True;
+                // }
+                if (date.format('YYYY-M-D') == '2025-5-22') {
+                    return true;
+                    }
+                }        
+            },
+        function (start, end, label) {
+            console.log("A new date selection was made: " + start.format('YYYY-MM-DD') + ' to ' + end.format('YYYY-M-D'));
+        });
+    });
+</script>
+

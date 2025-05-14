@@ -5,23 +5,23 @@ import datetime
 # -- description
 # -- price_per_night
 # -- user_id (owner)
-# -- dates_available
+# -- dates_booked -- changed from dates_available
 
 
 class Space():
-    def __init__(self, id, name, description, price_per_night, user_id, dates_available = []):
+    def __init__(self, id, name, description, price_per_night, user_id, dates_booked = []):
         self.id = id
         self.name = name
         self.description = description
         self.price_per_night = price_per_night
         self.user_id = user_id
-        self.dates_available = dates_available
+        self.dates_booked = dates_booked
     
     def __eq__(self, value):
         return self.__dict__ == value.__dict__
     
     def __repr__(self):
-        return f"space({self.id}, {self.name}, {self.description}, {self.price_per_night}, {self.user_id}, {self.dates_available})"
+        return f"space({self.id}, {self.name}, {self.description}, {self.price_per_night}, {self.user_id}, {self.dates_booked})"
     
     def is_valid(self):
         if self.name == None or self.name == "":
@@ -32,7 +32,7 @@ class Space():
             return False
         if self.user_id == None or self.user_id == '':
             return False
-        if self.dates_available == None or self.dates_available == '':
+        if self.dates_booked == None or self.dates_booked == '':
             return False
         return True
 
@@ -46,8 +46,8 @@ class Space():
             errors.append("Price per night can't be blank")
         if self.user_id == None or self.user_id == '':
             errors.append("User ID can't be blank")
-        if self.dates_available == None or self.dates_available == '':
-            errors.append("Dates Available can't be blank")
+        if self.dates_booked == None or self.dates_booked == '':
+            errors.append("Dates Booked can't be blank")
         if len(errors) == 0:
             return None
         else:

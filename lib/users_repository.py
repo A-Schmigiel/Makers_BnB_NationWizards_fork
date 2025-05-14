@@ -1,4 +1,4 @@
-from user import User
+from lib.user import User
 
 # parameters:
 # -- id
@@ -46,3 +46,5 @@ class UserRepository():
             return None
         row = rows[0]
         return User(row["id"], row["username"], row["email"], row["password"])
+    
+    
