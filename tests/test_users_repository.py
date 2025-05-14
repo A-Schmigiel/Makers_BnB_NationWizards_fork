@@ -1,9 +1,9 @@
-from lib.users_repository import userRepository
+from lib.users_repository import UserRepository
 from lib.user import User
 
 def test_create_user(db_connection):
     db_connection.seed("seeds/users.sql")
-    repo = userRepository(db_connection)
+    repo = UserRepository(db_connection)
 
     new_user = User(None, "newuser", "new@gmail.com", "securepw")
     created_user = repo.create_user(new_user)
@@ -16,7 +16,7 @@ def test_create_user(db_connection):
 # retrieving the list of all users 
 def test_get_all_users(db_connection):
     db_connection.seed("seeds/users.sql")
-    repo = userRepository(db_connection)
+    repo = UserRepository(db_connection)
 
     users = repo.get_all_users()
 
@@ -28,7 +28,7 @@ def test_get_all_users(db_connection):
 #Getting the specific user by their id
 def test_get_user_by_id(db_connection):
     db_connection.seed("seeds/users.sql")
-    repo = userRepository(db_connection)
+    repo = UserRepository(db_connection)
 
     user = repo.get_user(1)
     assert user == User(1, "john_doe", "johndoe@gmail.com", "password123")
@@ -37,7 +37,7 @@ def test_get_user_by_id(db_connection):
 # When a user is removed from the system it no longer exists
 def test_remove_user(db_connection):
     db_connection.seed("seeds/users.sql")
-    repo = userRepository(db_connection)
+    repo = UserRepository(db_connection)
 
     repo.remove_user(1)
     users = repo.get_all_users()
@@ -48,7 +48,7 @@ def test_remove_user(db_connection):
 #User can log in if the email and password match
 def test_sign_in_success(db_connection):
     db_connection.seed("seeds/users.sql")
-    repo = userRepository(db_connection)
+    repo = UserRepository(db_connection)
 
     user = repo.sign_in("johndoe@gmail.com", "password123")
 
@@ -57,7 +57,7 @@ def test_sign_in_success(db_connection):
 #User unable to login as the password doesn't match
 def test_sign_in_failure(db_connection):
     db_connection.seed("seeds/users.sql")
-    repo = userRepository(db_connection)
+    repo = UserRepository(db_connection)
 
     user = repo.sign_in("johndoe@gmail.com", "wrongpw")
     assert user is None

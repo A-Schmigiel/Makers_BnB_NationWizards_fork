@@ -32,7 +32,7 @@ class Space():
             return False
         if self.user_id == None or self.user_id == '':
             return False
-        if self.dates_booked == None or self.dates_booked == '':
+        if not self.dates_booked: # changed this
             return False
         return True
 
@@ -46,7 +46,7 @@ class Space():
             errors.append("Price per night can't be blank")
         if self.user_id == None or self.user_id == '':
             errors.append("User ID can't be blank")
-        if self.dates_booked == None or self.dates_booked == '':
+        if not self.dates_booked: # changed this
             errors.append("Dates Booked can't be blank")
         if len(errors) == 0:
             return None

@@ -1,52 +1,114 @@
 from lib.space import Space
+from datetime import datetime
 
 # Valid space with all fields
-def test_space_is_valid_when_all_fields_are_present():
-    space = Space(1, "Green Lodge", "A lodge that is green", 100.0, "2025-05-30", 1)
+def test_create_space():
+    space = Space(id=1, name="Green Lodge", description="A lodge that is green", 
+                price_per_night=100.00, user_id=1, dates_booked=["2025-05-20", "2025-05-30"])
+    
+    assert space.id == 1
+    assert space.name == "Green Lodge"
+    assert space.description == "A lodge that is green"
+    assert space.price_per_night == 100.00
+    assert space.user_id == 1
+    assert space.dates_booked == ["2025-05-20", "2025-05-30"]
+
+#Space is valid
+def test_is_valid_with_valid_data():
+    space = Space(id=1, name="Green Lodge", description="A lodge that is green", 
+                price_per_night=100.00, user_id=1, dates_booked=["2025-05-20", "2025-05-30"])
+    
     assert space.is_valid() == True
 
-# Invalid when name is missing
-def test_space_is_invalid_when_name_is_blank():
-    space = Space(1, "", "A lodge that is green", 100.0)
+#Space is invalid when name is blank
+def test_is_valid_with_blank_name():
+    space = Space(id=1, name="", description="A lodge that is green", 
+                price_per_night=100.00, user_id=1, dates_booked=["2025-05-20", "2025-05-30"])
+    
     assert space.is_valid() == False
 
-# Invalid when description is missing
-def test_space_is_invalid_when_description_is_blank():
-    space = Space(1, "Green Cabin", "", 120.0)
+#Space is invalid when description is blank
+def test_is_valid_with_blank_description():
+    space = Space(id=1, name="Green Lodge", description="", 
+                price_per_night=100.00, user_id=1, dates_booked=["2025-05-20", "2025-05-30"])
+    
     assert space.is_valid() == False
 
-# Invalid when cost is missing
-def test_space_is_invalid_when_cost_is_blank():
-    space = Space(1, "Green Cabin", "A cozy green cabin", "")
+#Space is invalid when price_per_night is blank
+def test_is_valid_with_blank_price_per_night():
+    space = Space(id=1, name="Green Lodge", description="A lodge that is green", 
+                price_per_night="", user_id=1, dates_booked=["2025-05-20", "2025-05-30"])
+    
     assert space.is_valid() == False
 
-# Invalid when cost is not a positive number
-def test_space_is_invalid_when_cost_is_negative():
-    space = Space(1, "Green Cabin", "A cozy green cabin", -50)
+#Space is invalid when user_id is blank
+def test_is_valid_with_blank_user_id():
+    space = Space(id=1, name="Green Lodge", description="A lodge that is green", 
+                price_per_night=100.00, user_id="", dates_booked=["2025-05-20", "2025-05-30"])
+    
     assert space.is_valid() == False
 
-# generate_errors returns single error
-def test_generate_errors_for_blank_name():
-    space = Space(1, "", "A cabin", 100.0)
-    assert space.generate_errors() == "Name can't be blank"
+#Space is invalid when dates_booked is blank
+def test_is_valid_with_blank_dates_booked():
+    space = Space(id=1, name="Green Lodge", description="A lodge that is green", 
+                price_per_night=100.00, user_id=1, dates_booked=[])
+    
+    assert space.is_valid() == False
 
-# generate_errors returns multiple errors
-def test_generate_errors_for_multiple_blank_fields():
-    space = Space(1, "", "", "")
-    assert space.generate_errors() == "Name can't be blank, Description can't be blank, Cost must be a positive number"
+#generate_errors for missing name
+def test_generate_errors_with_missing_name():
+    space = Space(id=1, name="", description="A lodge that is green", 
+                price_per_night=100.00, user_id=1, dates_booked=["2025-05-20", "2025-05-30"])
+    
+    errors = space.generate_errors()
+    assert "Name can't be blank" in errors
 
-# generate_errors returns None when space is valid
-def test_generate_errors_returns_none_for_valid_space():
-    space = Space(1, "Forest Hut", "Peaceful retreat", 150.0)
-    assert space.generate_errors() is None
+#generate_errors for missing description
+def test_generate_errors_with_missing_description():
+    space = Space(id=1, name="Green Lodge", description="", 
+                price_per_night=100.00, user_id=1, dates_booked=["2025-05-20", "2025-05-30"])
+    
+    errors = space.generate_errors()
+    assert "Description can't be blank" in errors
 
-# Test equality between spaces
-def test_spaces_are_equal_when_data_matches():
-    space1 = Space(1, "Forest Hut", "Peaceful retreat", 150.0)
-    space2 = Space(1, "Forest Hut", "Peaceful retreat", 150.0)
+#generate_errors for missing price_per_night
+def test_generate_errors_with_missing_price_per_night():
+    space = Space(id=1, name="Green Lodge", description="A lodge that is green", 
+                price_per_night="", user_id=1, dates_booked=["2025-05-20", "2025-05-30"])
+    
+    errors = space.generate_errors()
+    assert "Price per night can't be blank" in errors
+
+#generate_errors for missing user_id
+def test_generate_errors_with_missing_user_id():
+    space = Space(id=1, name="Green Lodge", description="A lodge that is green", 
+                price_per_night=100.00, user_id="", dates_booked=["2025-05-20", "2025-05-30"])
+    
+    errors = space.generate_errors()
+    assert "User ID can't be blank" in errors
+
+#generate_errors for missing dates_booked
+def test_generate_errors_with_missing_dates_booked():
+    space = Space(id=1, name="Green Lodge", description="A lodge that is green", 
+                price_per_night=100.00, user_id=1, dates_booked=[])
+    
+    errors = space.generate_errors()
+    assert "Dates Booked can't be blank" in errors
+
+#equality of two identical Space objects
+def test_space_equality():
+    space1 = Space(id=1, name="Green Lodge", description="A lodge that is green", 
+                price_per_night=100.00, user_id=1, dates_booked=["2025-05-20", "2025-05-30"])
+    space2 = Space(id=1, name="Green Lodge", description="A lodge that is green", 
+                price_per_night=100.00, user_id=1, dates_booked=["2025-05-20", "2025-05-30"])
+
     assert space1 == space2
 
-# Test __repr__ returns readable string
-def test_space_repr_format():
-    space = Space(1, "Green Cabin", "A cozy green cabin", 120.0)
-    assert repr(space) == "Space(id=1, name=Green Cabin, description=A cozy green cabin, cost=120.0)"
+#inequality of two different Space objects
+def test_space_inequality():
+    space1 = Space(id=1, name="Green Lodge", description="A lodge that is green", 
+                price_per_night=100.00, user_id=1, dates_booked=["2025-05-20", "2025-05-30"])
+    space2 = Space(id=2, name="Hobbitsville", description="A place for small people", 
+                price_per_night=150.00, user_id=2, dates_booked=["2025-06-01", "2025-06-10"])
+
+    assert space1 != space2
