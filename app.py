@@ -77,7 +77,6 @@ def list_space():
             description=form.space_description.data,
             price_per_night=form.space_price_per_night.data,
             user_id=1,  # Assuming user_id is 1 for this example
-            dates_available=[form.space_available_from.data, form.space_available_to.data]
         )
         repository.create_space(space)
         return redirect('/spaces')
@@ -88,7 +87,7 @@ def show_listing(id):
     connection = get_flask_database_connection(app)
     repository = SpaceRepository(connection)
     space = repository.get_space(id)
-    # valid_dates = [i.isoformat() for i in space.dates_available]                # <<=== still working on a solution for full integration of dates list into calendar
+    space.dates_booked = [i.isoformat() for i in space.dates_booked]
     return render_template('booking.html', space=space)
 
 @app.route('/spaces/<int:id>', methods=['POST'])
@@ -123,6 +122,4 @@ def get_index():
 # if started in test mode.
 if __name__ == '__main__':
     app.run(debug=True, port=int(os.environ.get('PORT', 5001)))
-
-
 

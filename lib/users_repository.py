@@ -1,4 +1,5 @@
 from lib.user import User
+import re
 
 # parameters:
 # -- id
@@ -14,7 +15,17 @@ class UserRepository():
     def __init__(self, connection):
         self.connection = connection
     
+    def is_valid(self, password):
+        spec_char = ['!', '@', '£', '$', '%', '&']
+        return len(password) > 7 and any(char in password for char in spec_char)
+
     def create_user(self, user):
+        if '@' not in user.email or '.' not in user.email or user.email.endswith('.'):
+            raise ValueError("Please input a valid email")
+        if not self.is_valid(user.password):
+            raise ValueError("Password must be 8 or more characters and contain at least one special character")
+        if user.password != user.confirm_password:
+            raise ValueError("Passwords must match")
         rows = self.connection.execute('INSERT INTO users (username, email, password) VALUES (%s, %s, %s) RETURNING id', [user.username, user.email, user.password])
         row = rows[0]
         user.id = row["id"]

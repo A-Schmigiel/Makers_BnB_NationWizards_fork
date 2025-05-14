@@ -5,11 +5,12 @@
 # -- password
 
 class User():
-    def __init__(self, id, username, email, password):
+    def __init__(self, id, username, email, password, confirm_password=None):
         self.id = id
         self.username = username
         self.email = email
         self.password = password
+        self.confirm_password = confirm_password
     
     def __eq__(self, value):
         return self.__dict__ == value.__dict__

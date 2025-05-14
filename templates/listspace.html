@@ -50,7 +50,11 @@
       </head>
     </head>
     <body>
-       
+
+        <p>List your new space here.</p>
+        <div class="text-center">  <!--center alignment buttons for navigation -->
+        <a href="index.html" button type="button" class="btn btn-dark">Home</button> </a>  
+
  <div class="row">
   <form action="/listspace" method="POST">
     {{ form.csrf_token }}
@@ -60,10 +64,6 @@
     {{ form.space_description }}
     {{ form.space_price_per_night.label }}
     {{ form.space_price_per_night }}
-    {{ form.space_available_from.label }}
-    {{ form.space_available_from }}
-    {{ form.space_available_to.label }}
-    {{ form.space_available_to }}
     {{ form.submit }}
     
 </form>

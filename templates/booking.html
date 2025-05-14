@@ -5,7 +5,6 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <title>MakersBnB</title>
         <link rel="stylesheet" href="/static/style.css">
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.10.0/css/bootstrap-datepicker.standalone.min.css">
     </head>
 
     <body id="booking-page">
@@ -28,7 +27,7 @@
                                         <label for="daterange">Plan your stay today:  </label>
                                         <input type="daterange" name="daterange" id="daterange"> <br> <br>
                                         <textarea class="form-control counted" id="request-message" placeholder="Say hi to {{space.name}}'s host!" rows="5" align="center"></textarea><br>
-                                        <input type="submit" value="Send Request!" style="background-color: #ffdfb4ec; border-radius: 5px; width: 30%;">
+                                        <input type="submit" value="Send Request!" style="background-color: #c2f77d; border-radius: 5px; width: 30%;">
                                     </form>
                                 </div>
                             </div>
@@ -43,28 +42,47 @@
 <script type="text/javascript" src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
 <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
 <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
+
 <script>
-    // var invalid_dates={'17-5-2025','22-5-2025'}
-    $(".daterangepicker").show();
     $(function () {
+        const invalid_dates = {{ space.dates_booked | tojson | safe}};
+        
         $('input[name="daterange"]').daterangepicker({
             opens: 'center',
             minDate: new Date(),
             "locale": {
-                format: 'D-M-YYYY'
-            },
-            isInvalidDate: (date) => {
-                // if (invalid_dates.includes(date)) {
-                //     return True;
-                // }
-                if (date.format('YYYY-M-D') == '2025-5-22') {
-                    return true;
-                    }
-                }        
-            },
-        function (start, end, label) {
-            console.log("A new date selection was made: " + start.format('YYYY-MM-DD') + ' to ' + end.format('YYYY-M-D'));
-        });
-    });
-</script>
+                format: 'YYYY-MM-DD'
+                },
+            
+                isInvalidDate: function (date) {
+                const ckdate = date.format('YYYY-MM-DD');
+                return invalid_dates.includes(ckdate);
+                },
+        }, 
+            function (start, end, label) {
+            const startDate = start.format('YYYY-MM-DD');
+            const endDate = end.format('YYYY-MM-DD');
+            
+            // checks if start and end are the same
+            if (startDate == endDate) {
+                alert("Check in and check out dates cannot be the same. Please select another range.");
+                start = minDate
+                end = setDate(getDate(minDate) + 1)
+                return false;
+            }
 
+            // checks if the range goes over an invalid date
+            if (invalid_dates.some(date => {
+                const currentDate = moment(date);
+                return currentDate.isBetween(start, end, 'day', '[]');
+            })) {
+                alert("One or more dates in the selected range are already booked. Please select another range.");
+                start = minDate
+                end = minDate
+                return false;
+                }
+            console.log("A new date selection was made: " + start.format('YYYY-MM-DD') + ' to ' + end.format('YYYY-M-D'));
+            });
+    });
+    
+</script>
