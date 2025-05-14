@@ -27,7 +27,7 @@ app = Flask(__name__)
 # #  Hardcoded secret key 
 app.config['SECRET_KEY'] = '072bb84cfdff08af0c1d8cd67f3be65bba12485bf0e9ea4dae5a49dc83260663'
 
-# bcrypt = Bcrypt(app)
+bcrypt = Bcrypt(app)
 
 @app.route('/', methods=['GET', 'POST'])
 def index():
@@ -55,49 +55,6 @@ if __name__ == '__main__':
     app.run(debug=True)
 #This is the end of the block for the login and password security content
 
-
-#LOGIN CODE BEGINS HERE:
-
-login_manager = LoginManager()
-login_manager.init_app(app)
-
-@login_manager.user_loader
-def load_user(user_id):
-    connection = get_flask_database_connection(app)
-    repository = UserRepository(connection)
-    return repository.get_user(user_id)
-
-@app.route('/login', methods=['GET', 'POST'])
-def login():
-    form = MyForm()
-    if form.validate_on_submit():
-        username = form.username.data
-        password = form.password.data
-
-        connection = get_flask_database_connection(app)
-        repository = UserRepository(connection)
-        user = repository.get_user_by_username(username)
-
-        if user and bcrypt.check_password_hash(user.password, password):
-            login_user(user)
-            return redirect('/spaces')
-        else:
-            return render_template('login.html', form=form, error="Invalid credentials")
-
-    return render_template('login.html', form=form)
-
-
-@app.route('/logout')
-@login_required
-def logout():
-    connection = get_flask_database_connection(app)
-    repository = UserRepository(connection)
-    user = repository.get_user(current_user.id)
-    if user:
-        logout_user()
-        return redirect('/index')
-    else:
-        return render_template('login.html', error="User not found")
 
 #LOGIN CODE BEGINS HERE:
 
