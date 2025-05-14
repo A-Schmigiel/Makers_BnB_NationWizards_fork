@@ -5,7 +5,6 @@ import datetime
 import calendar
 # helps manage secret key
 from flask_bcrypt import Bcrypt
-
 from forms import MyForm, ListSpacesForm
 # repositories
 from lib.spaces_repository import SpaceRepository
@@ -17,8 +16,6 @@ from lib.request import Request
 from lib.user import User
 #login stuff
 from flask_login import LoginManager, login_user, login_required, current_user, logout_user
-
-
 
 
 
@@ -204,8 +201,6 @@ def request_booking(id):
         return render_template('booking.html', request=new_request, errors=new_request.generate_errors()), 400
     request = request_repository.create_request(new_request)
     return redirect(f"/requests")
-
-
 
 
 # GET /index
