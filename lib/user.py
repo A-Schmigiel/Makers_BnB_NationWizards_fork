@@ -10,7 +10,19 @@ class User():
         self.username = username
         self.email = email
         self.password = password
-        self.confirm_password = confirm_password
+
+    def is_authenticated(self):
+        return True
+    
+    def is_active(self):
+        return True
+    
+    def is_anonymous(self):
+        return False
+    
+    def get_id(self):
+        return str(self.id)
+    
     
     def __eq__(self, value):
         return self.__dict__ == value.__dict__
