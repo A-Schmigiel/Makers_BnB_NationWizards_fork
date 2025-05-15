@@ -9,139 +9,115 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous">
     <nav class="navbar navbar-expand-lg bg-body-tertiary">
       <div class="container-fluid">
-        <a class="navbar-brand" href="spaces.html">MakersBnB</a>
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+        <a class="navbar-brand" href="http://localhost:5001/spaces">WizardBnB</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+          aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
           <span class="navbar-toggler-icon"></span>
         </button>
         <div class="collapse navbar-collapse" id="navbarNav">
           <ul class="navbar-nav">
             <li class="nav-item">
-              <a class="nav-link disabled" aria-disabled="true" href="/spaces">Spaces</a>
+              <a class="nav-link" href="/spaces">Spaces</a>
             </li>
             <li class="nav-item">
               <a class="nav-link" href="/listspace">List a space</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="/about">About us</a>
+              <a class="nav-link" href="/users/{{current_user.id}}/requests">Requests</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="/requests">Requests</a>
-            <li class="nav-item">
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="/index">Sign out</a>
-            <li class="nav-item">
+              <a class="nav-link" href="{{ url_for('logout')}}">Sign out</a>
             </li>
           </ul>
         </div>
       </div>
     </nav>
     <style>
-      .header {
-        position: sticky;
-        top: 0;
-        padding: 10px 16px;
-        background: #555;
-        color: #f1f1f1;
-      }
-
-        <title>WizardBnB</title>
-        <link rel="stylesheet" href="/static/style.css" >
-        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous">
-
-    
       body,
       html {
         height: 100%;
         margin: 0;
       }
     
-
-    .bg-image {
-      background-image: url('https://thermohouse.co.uk/wp-content/uploads/2019/04/hero-image.jpg'); /* Replace with your image URL */
-      background-size: cover;
-      background-position: center;
-      height: 100vh;
-      color: rgb(255, 255, 255);
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      text-align: center;
-      padding: 2rem;
-    }
-
-        <nav class="navbar navbar-expand-lg bg-body-tertiary">
-    <div class="container-fluid">
-    <a class="navbar-brand" href="spaces.html">WizardBnB</a>
-    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-      <span class="navbar-toggler-icon"></span>
-    </button>
-    <div class="collapse navbar-collapse" id="navbarNav">
-      <ul class="navbar-nav">
-        <li class="nav-item">
-          <a class="nav-link disabled" aria-disabled="true" href="spaces.html">Spaces</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="listspace.html">List a space</a>
-        </li>
-        
-        <li class="nav-item">
-          <a class="nav-link" href="requests.html">Requests</a>
-
-
-    .bg-overlay {
-      background-color: #2d2c2bee;
-      padding: 2rem;
-      border-radius: 10px;
-    }
-
+      .bg-image {
+        background-image: url('https://cdn.discordapp.com/attachments/381540690015813634/1372237323818897459/IMG_2055.png?ex=68260b18&is=6824b998&hm=19702f00e4f9489875239e076ef44b26b7dc669562f7b72271eee9f089a20fc3&');
+        /* Replace with your image URL */
+        background-size: cover;
+        background-position: center;
+        height: 100vh;
+        color: rgb(255, 255, 255);
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        text-align: center;
+        padding: 2rem;
+      }
+    
+      .bg-overlay {
+        background-color: #171513c5;
+        padding: 2rem;
+        border-radius: 10px;
+      }
+    
+      /* .navbar a {
+                  color: rgb(0, 0, 0) !important;
+                } */
+    
+      .input-box {
+        padding: 10px;
+        font-size: 16px;
+        width: 300px;
+        border: 1px solid #ffffff;
+        border-radius: 5px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      }
     </style>
-  </head>
-  
-  <body id="requests-page">
-    <div class="bg-image">
-      <div class="bg-overlay mx-auto col-md-8 col-lg-6">
-        <h1 class="display-4">Check your requests here!</h1>
-        <hr>
-        <div class="mail-container">
-          <ul>
-            {% for request in user_requests %}
-              {% if request.space_owner == user.id %}
-                {% if request.accepted == False %}
+    </head>
+    
+    <body id="request-page">
+      <div class="bg-image">
+        <div class="bg-overlay mx-auto col-md-8 col-lg-6">
+          <h1 class="display-4">Check your requests here!</h1>
+          <hr>
+          <div class="mail-container">
+            <ul>
+              {% for request in user_requests %}
+                {% if request.space_owner == user.id %}
+                  {% if request.accepted == False %}
+                      <li>
+                        <a href="/users/{{user.id}}/requests/{{request.id}}">Rental request denied.</a>
+                      </li>
+                    {% elif request.accepted == True %}
+                      <li>
+                        <a href="/users/{{user.id}}/requests/{{request.id}}">View the upcoming rental at your {{((spaces_repository.get_space(request.space_requested)).name)}}!</a>
+                      </li>
+                    {% else %}
+                      <li>
+                        <a href="/users/{{user.id}}/requests/{{request.id}}">{{(user_repository.get_user(request.request_sender)).username}} Would like to rent your {{((spaces_repository.get_space(request.space_requested)).name)}}!
+                        </a>
+                      </li>
+                    {% endif %}
+                {% else %}
+                    {% if request.accepted == False %}
                     <li>
                       <a href="/users/{{user.id}}/requests/{{request.id}}">Rental request denied.</a>
                     </li>
-                  {% elif request.accepted == True %}
+                    {% elif request.accepted == True %}
                     <li>
-                      <a href="/users/{{user.id}}/requests/{{request.id}}">View the upcoming rental at your {{((spaces_repository.get_space(request.space_requested)).name)}}!</a>
-                    </li>
-                  {% else %}
-                    <li>
-                      <a href="/users/{{user.id}}/requests/{{request.id}}">{{(user_repository.get_user(request.space_owner)).username}} Would like to rent your {{((spaces_repository.get_space(request.space_requested)).name)}}!
+                      <a href="/users/{{user.id}}/requests/{{request.id}}">View your upcoming holiday at {{((spaces_repository.get_space(request.space_requested)).name)}}!
                       </a>
                     </li>
-                  {% endif %}
-              {% else %}
-                  {% if request.accepted == False %}
-                  <li>
-                    <a href="/users/{{user.id}}/requests/{{request.id}}">Rental request denied.</a>
-                  </li>
-                  {% elif request.accepted == True %}
-                  <li>
-                    <a href="/users/{{user.id}}/requests/{{request.id}}">View your upcoming holiday at {{((spaces_repository.get_space(request.space_requested)).name)}}!
-                    </a>
-                  </li>
-                  {% else %}
-                  <li>
-                    <a href="/users/{{user.id}}/requests/{{request.id}}">
-                    You have requested to rent {{(user_repository.get_user(request.space_owner)).username}}'s {{((spaces_repository.get_space(request.space_requested)).name)}}!
-                    </a>
-                  </li>
-                  {% endif %}
-              {% endif %}
-            {% endfor %}
-          </ul>
-        </div>
+                    {% else %}
+                    <li>
+                      <a href="/users/{{user.id}}/requests/{{request.id}}">
+                      You have requested to rent {{(user_repository.get_user(request.space_owner)).username}}'s {{((spaces_repository.get_space(request.space_requested)).name)}}!
+                      </a>
+                    </li>
+                    {% endif %}
+                {% endif %}
+              {% endfor %}
+            </ul>
+          </div>
       </div>
     </div>
   </body>

@@ -90,7 +90,7 @@ def logout():
 # == SPACES/LISTSPACES/REQUESTS ROUTES ==
 
 @app.route('/spaces', methods=['GET'])
-# @login_required
+@login_required
 def get_spaces():
     connection = get_flask_database_connection(app) 
     repository = SpaceRepository(connection)        
@@ -117,10 +117,8 @@ def list_space():
         return redirect('/spaces')
     return render_template('listspace.html', form=form)
 
-
 @app.route('/users/<int:current_user_id>/spaces/<int:space_id>', methods=['GET'])
-# @login_required
-# This route is for showing a specific space
+@login_required
 def show_listing(current_user_id, space_id):
     connection = get_flask_database_connection(app)
     space_repository = SpaceRepository(connection)
@@ -130,7 +128,7 @@ def show_listing(current_user_id, space_id):
 
 
 @app.route('/users/<int:current_user_id>/spaces/<int:space_id>', methods=['POST'])
-# @login_required
+@login_required
 def request_booking(current_user_id, space_id):
     connection = get_flask_database_connection(app)
     space_repository = SpaceRepository(connection)
@@ -153,6 +151,7 @@ def request_booking(current_user_id, space_id):
     
 
 @app.route('/users/<int:id>/requests', methods=['GET'])
+@login_required
 def view_requests(id):
     connection = get_flask_database_connection(app)
     requests_repository = RequestRepository(connection)
@@ -163,14 +162,34 @@ def view_requests(id):
     return render_template('requests.html', user_requests=user_requests, user=user, user_repository=user_repository, spaces_repository=spaces_repository)
 
 @app.route('/users/<int:user_id>/requests/<int:request_id>', methods=['GET'])
+@login_required
 def view_request(user_id, request_id):
     connection = get_flask_database_connection(app)
     requests_repository = RequestRepository(connection)
     user_repository = UserRepository(connection)
     spaces_repository = SpaceRepository(connection)
     user = user_repository.get_user(user_id)
-    request = requests_repository.get_request(request_id)
-    return render_template('request.html', user=user, user_repository=user_repository, spaces_repository=spaces_repository, request=request)
+    show_request = requests_repository.get_request(request_id)
+    dates_requested = request.form.get("daterange", "").strip()
+    return render_template('request.html', user=user, user_repository=user_repository, spaces_repository=spaces_repository, request=show_request)
+
+@app.route('/users/<int:user_id>/requests/<int:request_id>', methods=['POST'])
+@login_required
+def approve_or_deny_request(user_id, request_id):
+    connection = get_flask_database_connection(app)
+    requests_repository = RequestRepository(connection)
+    user_repository = UserRepository(connection)
+    spaces_repository = SpaceRepository(connection)
+    user = user_repository.get_user(user_id)
+    show_request = requests_repository.get_request(request_id)
+    if 'approve_button' in request.form:
+        requests_repository.approve_request(show_request)
+    elif 'deny_button' in request.form:
+        requests_repository.deny_request(show_request)
+    return redirect(f"/users/{user.id}/requests")
+
+
+    # return render_template('request.html', user=user, user_repository=user_repository, spaces_repository=spaces_repository, request=request)
 
 # GET /index
 # Returns the homepage
