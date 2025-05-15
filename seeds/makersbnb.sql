@@ -26,6 +26,7 @@ CREATE TABLE spaces (
     price_per_night numeric(10, 2),
     dates_booked DATE ARRAY,
     owner_name text,
+    upload_image text,
 
     user_id int,
     constraint fk_spaces foreign key(user_id)
@@ -63,13 +64,14 @@ INSERT INTO users (username, email, password) VALUES
 
 --Inserting into the table spaces
 
-INSERT INTO spaces (name, description, price_per_night, dates_booked, user_id) VALUES ('Green Lodge', 'A lodge that is green', 100.00, '{[2025-05-20, 2025-05-30]}', 1);
-INSERT INTO spaces (name, description, price_per_night, dates_booked, user_id) VALUES ('Hobbitsville', 'A place for small people', 200.00, '{[2025-06-01, 2025-06-10]}', 2);
+INSERT INTO spaces (name, description, price_per_night, dates_booked, user_id, upload_image) VALUES ('Green Lodge', 'A lodge that is green', 100.00, '{[2025-05-20, 2025-05-30]}', 1, 'https://cdn.audleytravel.com/2303/1645/79/492098-phinda-forest-lodge-phinda-private-game-reserve.jpg');
+INSERT INTO spaces (name, description, price_per_night, dates_booked, user_id, upload_image) VALUES ('Hobbitsville', 'A place for small people', 200.00, '{[2025-06-01, 2025-06-10]}', 2, 'https://townsquare.media/site/523/files/2023/03/attachment-joshua-harris-9yoPEVoSTcA-unsplash-1.jpg?w=780&q=75');
 
 --Inserting into the table requests
 INSERT INTO requests (request_sender, space_owner, message_content, space_requested, dates_requested, accepted)
 VALUES
-    (1, 2, 'Is this available?', 1, ARRAY['2025-06-15', '2025-06-20']::date[], FALSE),
-    (2, 1, 'Is this pet friendly?', 2, ARRAY['2025-07-01', '2025-07-05']::date[], TRUE),
-    (1, 1, 'Can I book this?', 1, ARRAY['2025-05-22', '2025-05-24']::date[], FALSE),
+
+    (1, 2, 'Is this available?', 1, ARRAY['2025-06-15', '2025-06-20']::date[], NULL),
+    (2, 1, 'Is this pet friendly?', 2, ARRAY['2025-07-01', '2025-07-05']::date[], NULL),
+    (1, 1, 'Can I book this?', 1, ARRAY['2025-05-22', '2025-05-24']::date[], NULL),
     (2, 2, 'Is this kid friendly?', 2, ARRAY['2025-06-10', '2025-06-15']::date[], TRUE);

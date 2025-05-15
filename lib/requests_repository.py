@@ -43,6 +43,12 @@ class RequestRepository():
         return Request(row["id"], row["request_sender"], row["space_owner"], row['message_content'], row["space_requested"], row["dates_requested"], row["accepted"])
     
     def remove_request(self, id):
-        self.connection.execute('DELETE FROM spaces WHERE id = %s', [self.id])
-        return None 
+        self.connection.execute('DELETE FROM requests WHERE id = %s', [id])
 
+    def approve_request(self, request):
+        self.connection.execute('UPDATE requests SET accepted = True WHERE id = %s', [request.id])
+        return None
+    
+    def deny_request(self, request):
+        self.connection.execute('UPDATE requests SET accepted = False WHERE id = %s', [request.id])
+        return None
