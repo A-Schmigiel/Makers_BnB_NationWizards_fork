@@ -149,7 +149,7 @@ def request_booking(current_user_id, space_id):
     else:
         return render_template('booking.html', new_request=new_request, errors=new_request.generate_errors(), space=space, current_user_id=current_user_id), 400
     
-
+    
 @app.route('/users/<int:id>/requests', methods=['GET'])
 def view_requests(id):
     connection = get_flask_database_connection(app)
@@ -170,6 +170,7 @@ def view_request(user_id, request_id):
     request = requests_repository.get_request(request_id)
     return render_template('request.html', user=user, user_repository=user_repository, spaces_repository=spaces_repository, request=request)
 
+
 # GET /index
 # Returns the homepage
 # Try it:
@@ -177,6 +178,25 @@ def view_request(user_id, request_id):
 @app.route('/index', methods=['GET'])
 def get_index():
     return render_template('index.html')
+
+
+# POST /user
+# Want to create a new user and add them to the user table
+#   ; open http://localhost:5001/
+@app.route('/index', methods=['POST'])
+def create_user():
+    connection = get_flask_database_connection(app)
+    repository = SpaceRepository(connection)
+    data = request.get_json()  # Use request.form if you're submitting from a form
+    user = User(
+        username=data['username'],
+        email=data['email'],
+        password=data['password'],
+        confirm_password=data['confirm_password']
+    )
+    repository.create_user(user)
+    return '', 200  
+
 
 # These lines start the server if you run this file directly
 # They also start the server configured to use the test database

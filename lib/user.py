@@ -6,6 +6,7 @@ class User(UserMixin):
         self.username = username
         self.email = email
         self.password = password
+        self.confirm_password = confirm_password #added this line
 
     def get_id(self):
         return str(self.id)
