@@ -21,24 +21,35 @@ When I request a GET method on /spaces
 I get a list of spaces back.
 """
 def test_get_spaces(test_web_address, page, db_connection):
-    db_connection.seed("seeds/makersbnb.sql")  # changed the seed file name after making single seed file for all tables
+    # Seed test data
     db_connection.seed("seeds/makersbnb.sql")
+
+    page.goto(f"http://{test_web_address}/login")
+    page.fill("input[name='username']", "john_doe")
+    page.fill("input[name='password']", "password123")
+    page.click("button[type='submit']")
+    page.wait_for_url(f"http://{test_web_address}/spaces") 
+
     page.goto(f"http://{test_web_address}/spaces")
     h5_tags = page.locator("h5")
     expect(h5_tags).to_have_text(["Green Lodge", "Hobbitsville"])
 
-# def test_create_user()
     
 #===TESTS FOR /LISTSPACE===
 
+# def test_list_spaces_success(web_client, db_connection):
+#     db_connection.seed("seeds/makersbnb.sql")
 
+#     login_response = web_client.post(
+#         "/login",
+#         data={"username": "john_doe", "password": "password123"},
+#         follow_redirects=True,
+#     )
 
+#     print(login_response.data.decode())  # See if it contains login errors
 
-
-
-
-
-
+#     assert login_response.status_code == 200
+#     assert b"Spaces" in login_response.data
 
 #===TESTS FOR /LOGIN===
 """
@@ -48,18 +59,45 @@ I am redirected to the /spaces page
 def test_login_success(test_web_address, page, web_client, db_connection): # <- this needs to be web_client instead of client-- refer to conftest.py
     # Seed the database with a user whose password is 'password123'
     db_connection.seed("seeds/makersbnb.sql")
-    page.goto(f"http://{test_web_address}/login")
+    page.goto(f"http://{test_web_address}/logindb_connection")
     response = web_client.post(
         "/login",
         data={"username": "john_doe", "password": "password123"},
         follow_redirects=True,
     )
     assert response.status_code == 200
+
+#Invalid login tests
+
+# def test_login_failure(web_client, db_connection):
+#     # Seed the database with a known user
+#     db_connection.seed("seeds/makersbnb.sql")
+
+#     # Attempt to log in with an incorrect password
+#     response = web_client.post(
+#         "/login",
+#         data={"username": "john_doe", "password": "wrongpassword"},
+#         follow_redirects=True,
+#     )
+
+#     # Check that the login failed gracefully
+#     assert response.status_code == 200  # Should stay on login page
+#     assert b"Invalid credentials" in response.data
     
-
-
-
-
-
-
-##===TESTS FOR /LOGOUT===
+# ##===TESTS FOR /LOGOUT===
+def test_logout_success(web_client, db_connection):
+    db_connection.seed("seeds/makersbnb.sql")
+    
+    response = web_client.post(
+        "/login",
+        data={"username": "john_doe", "password": "password123"},
+        follow_redirects=True,
+    )
+    
+    assert response.status_code == 200
+    
+    response = web_client.get('/logout', follow_redirects=True)
+    
+    assert response.status_code == 200 
+    assert b"Log in" in response.data 
+    assert response.request.path == '/login'
