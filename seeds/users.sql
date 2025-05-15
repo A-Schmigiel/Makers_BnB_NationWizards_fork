@@ -10,8 +10,10 @@ CREATE TABLE users (
 );
 
 
+
 -- Inserting into the TABLE
 
 INSERT INTO users (username, email, password) VALUES 
-('john_doe', 'johndoe@gmail.com', 'password123'),
-('jane_doe', 'janedoe@gmail.com', 'password456');
+('john_doe', 'johndoe@gmail.com', '$2b$12$deQUgswzeqw2yy57MFubguANl/NZodZtcpFTxd/kL67.SePhpcXHu'),
+('jane_doe', 'janedoe@gmail.com', '$2b$12$fIvFzbOn9FzromZDrZ5tMO/KkoM5EPsMmC91enUcCtDCCK/57y3A2');
+

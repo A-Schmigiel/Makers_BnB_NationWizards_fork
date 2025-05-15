@@ -49,6 +49,18 @@ class UserRepository():
         self.connection.execute('DELETE FROM spaces WHERE id = %s', [self.id])
         return None
 
+
+    def get_user_by_username(self, username):
+        rows = self.connection.execute(
+            "SELECT id, username, email, password FROM users WHERE username = %s",
+            [username]
+        )
+        if not rows:
+            return None
+        row = rows[0]
+        return User(row["id"], row["username"], row["email"], row["password"])
+
+
     # Adding sign in method
     def sign_in(self, email, password):
         rows = self.connection.execute(
@@ -58,5 +70,4 @@ class UserRepository():
             return None
         row = rows[0]
         return User(row["id"], row["username"], row["email"], row["password"])
-    
-    
+        
