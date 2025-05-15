@@ -32,7 +32,7 @@ class Request():
             return False
         if self.space_requested == None or self.space_requested == '':
             return False
-        if self.dates_requested == None or self.dates_requested == '':
+        if not self.dates_requested: #changed this as this will catch both None and empty list
             return False
         return True
 
@@ -46,7 +46,7 @@ class Request():
             errors.append("Message content can't be blank")
         if self.space_requested == None or self.space_requested == '':
             errors.append("Space requested can't be blank")
-        if self.dates_requested == None or self.dates_requested == '':
+        if not self.dates_requested: # changed this as this catches None, '' and[]
             errors.append("Dates requested can't be blank")
         if self.accepted == None or self.accepted == '':
             errors.append("Accepted can't be blank")

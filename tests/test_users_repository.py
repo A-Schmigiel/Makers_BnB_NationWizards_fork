@@ -3,7 +3,7 @@ from lib.user import User
 import pytest
 
 def test_create_user(db_connection):
-    db_connection.seed("seeds/users.sql")
+    db_connection.seed("seeds/makersbnb.sql")
     repo = UserRepository(db_connection)
 
     new_user = User(None, "newuser", "new@gmail.com", "securepw!", "securepw!")
@@ -48,7 +48,7 @@ def test_create_user_mismatched_passwords(db_connection):
 
 # retrieving the list of all users 
 def test_get_all_users(db_connection):
-    db_connection.seed("seeds/users.sql")
+    db_connection.seed("seeds/makersbnb.sql")
     repo = UserRepository(db_connection)
 
     users = repo.get_all_users()
@@ -60,7 +60,7 @@ def test_get_all_users(db_connection):
 
 #Getting the specific user by their id
 def test_get_user_by_id(db_connection):
-    db_connection.seed("seeds/users.sql")
+    db_connection.seed("seeds/makersbnb.sql")
     repo = UserRepository(db_connection)
 
     user = repo.get_user(1)
@@ -69,7 +69,7 @@ def test_get_user_by_id(db_connection):
 
 # When a user is removed from the system it no longer exists
 def test_remove_user(db_connection):
-    db_connection.seed("seeds/users.sql")
+    db_connection.seed("seeds/makersbnb.sql")
     repo = UserRepository(db_connection)
 
     repo.remove_user(1)
@@ -80,7 +80,7 @@ def test_remove_user(db_connection):
 
 #User can log in if the email and password match
 def test_sign_in_success(db_connection):
-    db_connection.seed("seeds/users.sql")
+    db_connection.seed("seeds/makersbnb.sql")
     repo = UserRepository(db_connection)
 
     user = repo.sign_in("johndoe@gmail.com", "password123")
@@ -89,7 +89,7 @@ def test_sign_in_success(db_connection):
 
 #User unable to login as the password doesn't match
 def test_sign_in_failure(db_connection):
-    db_connection.seed("seeds/users.sql")
+    db_connection.seed("seeds/makersbnb.sql")
     repo = UserRepository(db_connection)
 
     user = repo.sign_in("johndoe@gmail.com", "wrongpw")
