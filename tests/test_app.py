@@ -21,8 +21,8 @@ When I request a GET method on /spaces
 I get a list of spaces back.
 """
 def test_get_spaces(test_web_address, page, db_connection):
-    db_connection.seed("seeds/users.sql")
-    db_connection.seed("seeds/spaces.sql")
+    db_connection.seed("seeds/makersbnb.sql")  # changed the seed file name after making single seed file for all tables
+    db_connection.seed("seeds/makersbnb.sql")
     page.goto(f"http://{test_web_address}/spaces")
     h5_tags = page.locator("h5")
     expect(h5_tags).to_have_text(["Green Lodge", "Hobbitsville"])

@@ -3,7 +3,7 @@ from lib.space import Space
 from datetime import date
 
 def test_create_space(db_connection):
-    db_connection.seed("seeds/spaces.sql")
+    db_connection.seed("seeds/makersbnb.sql")
     repo = SpaceRepository(db_connection)
 
     new_space = Space(None, "new_space", "new_description","100.00", 1, ['2025-10-25', '2025-10-30'])
@@ -19,7 +19,7 @@ def test_create_space(db_connection):
 
 # retrieving the list of all spaces 
 def test_get_all_spaces(db_connection):
-    db_connection.seed("seeds/spaces.sql")
+    db_connection.seed("seeds/makersbnb.sql")
     repo = SpaceRepository(db_connection)
 
     spaces = repo.get_all_spaces()
@@ -31,7 +31,7 @@ def test_get_all_spaces(db_connection):
 
 #Getting the specific space by their id
 def test_get_space_by_id(db_connection):
-    db_connection.seed("seeds/spaces.sql")
+    db_connection.seed("seeds/makersbnb.sql")
     repo = SpaceRepository(db_connection)
 
     spaces = repo.get_space(1)
@@ -40,7 +40,7 @@ def test_get_space_by_id(db_connection):
 
 # When a space is removed from the system it no longer exists
 def test_remove_space(db_connection):
-    db_connection.seed("seeds/spaces.sql")
+    db_connection.seed("seeds/makersbnb.sql")
     repo = SpaceRepository(db_connection)
 
     repo.remove_space(1)
@@ -51,7 +51,7 @@ def test_remove_space(db_connection):
 
 # when booking a space
 def test_book_space(db_connection):
-    db_connection.seed("seeds/spaces.sql")
+    db_connection.seed("seeds/makersbnb.sql")
     repo = SpaceRepository(db_connection)
 
     repo.book_space(1, date(2025, 6, 15))
