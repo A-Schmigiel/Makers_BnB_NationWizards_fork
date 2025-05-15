@@ -109,7 +109,8 @@ def list_space():
             name=form.space_name.data,
             description=form.space_description.data,
             price_per_night=form.space_price_per_night.data,
-            user_id=current_user.id
+            user_id=current_user.id,
+            upload_image="placeholder" # change this when doing HTML input
         )
         repository.create_space(space)
         
@@ -247,4 +248,3 @@ def get_index():
 # if started in test mode.
 if __name__ == '__main__':
     app.run(debug=True, port=int(os.environ.get('PORT', 5001)))
-
