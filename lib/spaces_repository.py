@@ -42,10 +42,11 @@ class SpaceRepository():
         return Space(row["id"], row["name"], row["description"], row["price_per_night"], row["user_id"], row['dates_booked'])
     
     def remove_space(self, id):
-        self.connection.execute('DELETE FROM spaces WHERE id = %s', [self.id])
+        self.connection.execute('DELETE FROM spaces WHERE id = %s', [id])
         return None
 
     def book_space(self, id, new_date_booking):
-        self.connection.execute('SELECT ARRAY_APPEND(dates_booked, new_date_booking) from spaces where id = %s', [self.id])
-        return None
+        current = self.connection.execute('SELECT dates_booked FROM spaces WHERE id = %s', [id])[0]['dates_booked']
+        updated = current + [new_date_booking]
+        self.connection.execute('UPDATE spaces SET dates_booked = %s WHERE id = %s', [updated, id])
     

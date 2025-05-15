@@ -145,14 +145,28 @@
       box-shadow: 0 2px 4px rgba(0,0,0,0.1);
     }
     </style>
-   
+
     <div class="bg-image">
         <div class="bg-overlay mx-auto col-md-8 col-lg-6">
             <h1 class="display-4">List your Space</h1>
             <p class="lead">Provide details below to start renting out your space.</p>
             <div class="form-container">
-                <form method="POST" action="http://localhost:5001/listspace">
-                    {{ form.csrf_token }}
+
+                <h2 class="text-center mb-4">List Your Space</h2>
+                <form method="POST" action="{{ url_for('list_space') }}">
+                  {{ form.csrf_token }}
+                    {% with messages = get_flashed_messages() %}
+                        {% if messages %}
+                            <div class="alert alert-info">
+                                {{ messages[0] }}
+                            </div>
+                        {% endif %}
+                    {% endwith %}
+                    {% for error in form.errors.values() %}
+                        <div class="alert alert-danger">{{ error[0] }}</div>
+                    {% endfor %}
+                    
+
                     <div class="form-group">
                         <label for="space_name">{{ form.space_name.label }}</label>
                         {{ form.space_name(class="form-control") }}
