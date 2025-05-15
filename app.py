@@ -5,7 +5,7 @@ import datetime
 import calendar
 # helps manage secret key
 from flask_bcrypt import Bcrypt
-from forms import MyForm, ListSpacesForm
+from forms import LogInForm, ListSpacesForm, CreateUserForm
 # repositories
 from lib.spaces_repository import SpaceRepository
 from lib.requests_repository import RequestRepository
@@ -25,6 +25,7 @@ app.config['SECRET_KEY'] = '072bb84cfdff08af0c1d8cd67f3be65bba12485bf0e9ea4dae5a
 bcrypt = Bcrypt(app)
 login_manager = LoginManager()
 login_manager.init_app(app)
+login_manager.login_view = 'login'
 @login_manager.user_loader
 def load_user(user_id):
     connection = get_flask_database_connection(app)
@@ -35,11 +36,12 @@ def load_user(user_id):
 
 @app.route('/', methods=['GET', 'POST'])
 def index():
-    form = MyForm()
+    form = CreateUserForm()
     if form.validate_on_submit():
+        email = form.email.data
         username = form.username.data
-        # email = form.email.data
         password = form.password.data
+        confirm_password = form.confirm_password.data
 
         hashed_password = bcrypt.generate_password_hash(password).decode('utf-8')
 
@@ -53,14 +55,14 @@ def index():
             f'{match_message}'
         )
     
-    return render_template('index.html', form=form)
+    return render_template('spaces.html', form=form)
 
 
 # == LOGIN / LOGOUT ROUTES ==:
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
-    form = MyForm()
+    form = LogInForm()
     if form.validate_on_submit():
         username = form.username.data
         password = form.password.data
@@ -80,17 +82,14 @@ def login():
 def logout():
     connection = get_flask_database_connection(app)
     repository = UserRepository(connection)
-    user = repository.get_user(current_user.id)
-    if user:
-        logout_user()
-        return redirect('/index')
-    else:
-        return render_template('login.html', error="User not found")
+    logout_user()
+    return redirect('/index')
+
 
 # == SPACES/LISTSPACES/REQUESTS ROUTES ==
 
 @app.route('/spaces', methods=['GET'])
-# @login_required
+@login_required
 def get_spaces():
     connection = get_flask_database_connection(app) 
     repository = SpaceRepository(connection)        
@@ -99,9 +98,8 @@ def get_spaces():
     return render_template('spaces.html', spaces=spaces)
 
 @app.route('/listspace', methods=['GET', 'POST'])
+@login_required
 def list_space():
-    if not current_user.is_authenticated:
-        return app.login_manager.unauthorized()
     form = ListSpacesForm()
     if form.validate_on_submit():
         connection = get_flask_database_connection(app)
@@ -117,10 +115,8 @@ def list_space():
         return redirect('/spaces')
     return render_template('listspace.html', form=form)
 
-
 @app.route('/users/<int:current_user_id>/spaces/<int:space_id>', methods=['GET'])
-# @login_required
-# This route is for showing a specific space
+@login_required
 def show_listing(current_user_id, space_id):
     connection = get_flask_database_connection(app)
     space_repository = SpaceRepository(connection)
@@ -130,7 +126,7 @@ def show_listing(current_user_id, space_id):
 
 
 @app.route('/users/<int:current_user_id>/spaces/<int:space_id>', methods=['POST'])
-# @login_required
+@login_required
 def request_booking(current_user_id, space_id):
     connection = get_flask_database_connection(app)
     space_repository = SpaceRepository(connection)
@@ -151,8 +147,9 @@ def request_booking(current_user_id, space_id):
     else:
         return render_template('booking.html', new_request=new_request, errors=new_request.generate_errors(), space=space, current_user_id=current_user_id), 400
     
-
+    
 @app.route('/users/<int:id>/requests', methods=['GET'])
+@login_required
 def view_requests(id):
     connection = get_flask_database_connection(app)
     requests_repository = RequestRepository(connection)
@@ -163,14 +160,35 @@ def view_requests(id):
     return render_template('requests.html', user_requests=user_requests, user=user, user_repository=user_repository, spaces_repository=spaces_repository)
 
 @app.route('/users/<int:user_id>/requests/<int:request_id>', methods=['GET'])
+@login_required
 def view_request(user_id, request_id):
     connection = get_flask_database_connection(app)
     requests_repository = RequestRepository(connection)
     user_repository = UserRepository(connection)
     spaces_repository = SpaceRepository(connection)
     user = user_repository.get_user(user_id)
-    request = requests_repository.get_request(request_id)
-    return render_template('request.html', user=user, user_repository=user_repository, spaces_repository=spaces_repository, request=request)
+    show_request = requests_repository.get_request(request_id)
+    dates_requested = request.form.get("daterange", "").strip()
+    return render_template('request.html', user=user, user_repository=user_repository, spaces_repository=spaces_repository, request=show_request)
+
+@app.route('/users/<int:user_id>/requests/<int:request_id>', methods=['POST'])
+@login_required
+def approve_or_deny_request(user_id, request_id):
+    connection = get_flask_database_connection(app)
+    requests_repository = RequestRepository(connection)
+    user_repository = UserRepository(connection)
+    spaces_repository = SpaceRepository(connection)
+    user = user_repository.get_user(user_id)
+    show_request = requests_repository.get_request(request_id)
+    if 'approve_button' in request.form:
+        requests_repository.approve_request(show_request)
+    elif 'deny_button' in request.form:
+        requests_repository.deny_request(show_request)
+    return redirect(f"/users/{user.id}/requests")
+
+
+    # return render_template('request.html', user=user, user_repository=user_repository, spaces_repository=spaces_repository, request=request)
+
 
 # GET /index
 # Returns the homepage
@@ -179,6 +197,25 @@ def view_request(user_id, request_id):
 @app.route('/index', methods=['GET'])
 def get_index():
     return render_template('index.html')
+
+
+# POST /user
+# Want to create a new user and add them to the user table
+#   ; open http://localhost:5001/
+@app.route('/index', methods=['POST'])
+def create_user():
+    connection = get_flask_database_connection(app)
+    repository = SpaceRepository(connection)
+    data = request.get_json()  # Use request.form if you're submitting from a form
+    user = User(
+        username=data['username'],
+        email=data['email'],
+        password=data['password'],
+        confirm_password=data['confirm_password']
+    )
+    repository.create_user(user)
+    return '', 200  
+
 
 # These lines start the server if you run this file directly
 # They also start the server configured to use the test database

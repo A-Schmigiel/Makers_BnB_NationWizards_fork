@@ -26,6 +26,8 @@ def test_get_spaces(test_web_address, page, db_connection):
     page.goto(f"http://{test_web_address}/spaces")
     h5_tags = page.locator("h5")
     expect(h5_tags).to_have_text(["Green Lodge", "Hobbitsville"])
+
+# def test_create_user()
     
 #===TESTS FOR /LISTSPACE===
 

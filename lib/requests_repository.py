@@ -45,3 +45,10 @@ class RequestRepository():
     def remove_request(self, id):
         self.connection.execute('DELETE FROM requests WHERE id = %s', [id])
 
+    def approve_request(self, request):
+        self.connection.execute('UPDATE requests SET accepted = True WHERE id = %s', [request.id])
+        return None
+    
+    def deny_request(self, request):
+        self.connection.execute('UPDATE requests SET accepted = False WHERE id = %s', [request.id])
+        return None
