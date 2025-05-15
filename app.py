@@ -124,12 +124,12 @@ def new_user():
         repository = UserRepository(connection)
         hashed_password = bcrypt.generate_password_hash(form.password.data).decode('utf-8')
         user = User(
-            id=2,
+            id=None,
             email=form.email.data,
             username=form.username.data,
             password=hashed_password,
             confirm_password=hashed_password,
-            user_id=user.id
+    
             
         )
         repository.create_user(user)
