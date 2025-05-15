@@ -90,7 +90,7 @@ def logout():
 # == SPACES/LISTSPACES/REQUESTS ROUTES ==
 
 @app.route('/spaces', methods=['GET'])
-@login_required
+# @login_required
 def get_spaces():
     connection = get_flask_database_connection(app) 
     repository = SpaceRepository(connection)        
@@ -119,6 +119,8 @@ def list_space():
 
 
 @app.route('/users/<int:current_user_id>/spaces/<int:space_id>', methods=['GET'])
+# @login_required
+# This route is for showing a specific space
 def show_listing(current_user_id, space_id):
     connection = get_flask_database_connection(app)
     space_repository = SpaceRepository(connection)
@@ -126,24 +128,10 @@ def show_listing(current_user_id, space_id):
     space.dates_booked = [i.isoformat() for i in space.dates_booked]
     return render_template('booking.html', space=space, current_user_id=current_user_id)
 
+
 @app.route('/users/<int:current_user_id>/spaces/<int:space_id>', methods=['POST'])
+# @login_required
 def request_booking(current_user_id, space_id):
-        
-@app.route('/spaces/<int:id>', methods=['GET'])
-@login_required
-# This route is for showing a specific space
-def show_listing(id):
-    connection = get_flask_database_connection(app)
-    repository = SpaceRepository(connection)
-    space = repository.get_space(id)
-    # valid_dates = [i.isoformat() for i in space.dates_available]                # <<=== still working on a solution for full integration of dates list into calendar
-    return render_template('booking.html', space=space)
-
-@app.route('/spaces/<int:id>', methods=['POST'])
-@login_required
-# This route is for requesting a booking
-def request_booking(id):
-
     connection = get_flask_database_connection(app)
     space_repository = SpaceRepository(connection)
     request_repository = RequestRepository(connection)
@@ -164,7 +152,6 @@ def request_booking(id):
         return render_template('booking.html', new_request=new_request, errors=new_request.generate_errors(), space=space, current_user_id=current_user_id), 400
     
 
-
 @app.route('/users/<int:id>/requests', methods=['GET'])
 def view_requests(id):
     connection = get_flask_database_connection(app)
@@ -172,8 +159,6 @@ def view_requests(id):
     user_repository = UserRepository(connection)
     spaces_repository = SpaceRepository(connection)
     user = user_repository.get_user(id)
-    # sent_requests = requests_repository.get_all_sent_requests(user.id)
-    # recieved_requests = requests_repository.get_all_recieved_requests(user.id)
     user_requests = reversed([request for request in requests_repository.get_all_requests_for_user(id)])
     return render_template('requests.html', user_requests=user_requests, user=user, user_repository=user_repository, spaces_repository=spaces_repository)
 
