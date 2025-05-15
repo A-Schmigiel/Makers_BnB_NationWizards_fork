@@ -39,7 +39,7 @@ class SpaceRepository():
         rows = self.connection.execute(
             'SELECT * from spaces WHERE id = %s', [id])
         row = rows[0]
-        return Space(row["id"], row["name"], row["description"], row["price_per_night"], row["user_id"], row['upload_image'] row['dates_booked'])
+        return Space(row["id"], row["name"], row["description"], row["price_per_night"], row["user_id"], row['upload_image'], row['dates_booked'])
     
     def remove_space(self, id):
         self.connection.execute('DELETE FROM spaces WHERE id = %s', [id])

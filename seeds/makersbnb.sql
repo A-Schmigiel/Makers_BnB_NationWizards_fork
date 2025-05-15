@@ -14,7 +14,7 @@ CREATE TABLE users (
     id SERIAL PRIMARY KEY,
     username text,
     email text,
-    password text,
+    password text
 );
 
 CREATE SEQUENCE IF NOT EXISTS spaces_id_seq;
@@ -26,7 +26,7 @@ CREATE TABLE spaces (
     price_per_night numeric(10, 2),
     dates_booked DATE ARRAY,
     owner_name text,
-    upload_image text
+    upload_image text,
 
     user_id int,
     constraint fk_spaces foreign key(user_id)
