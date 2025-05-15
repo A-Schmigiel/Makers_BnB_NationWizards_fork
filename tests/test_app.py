@@ -43,11 +43,11 @@ def test_get_spaces(test_web_address, page, db_connection):
 When I log in with valid credentials
 I am redirected to the /spaces page
 """
-def test_login_success(test_web_address, page, client, db_connection):
+def test_login_success(test_web_address, page, web_client, db_connection): # <- this needs to be web_client instead of client-- refer to conftest.py
     # Seed the database with a user whose password is 'password123'
-    db_connection.seed("seeds/users.sql")
+    db_connection.seed("seeds/makersbnb.sql")
     page.goto(f"http://{test_web_address}/login")
-    response = client.post(
+    response = web_client.post(
         "/login",
         data={"username": "john_doe", "password": "password123"},
         follow_redirects=True,
