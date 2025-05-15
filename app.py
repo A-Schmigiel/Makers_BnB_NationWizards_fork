@@ -90,14 +90,13 @@ def logout():
 # == SPACES/LISTSPACES/REQUESTS ROUTES ==
 
 @app.route('/spaces', methods=['GET'])
-@login_required
+# @login_required
 def get_spaces():
     connection = get_flask_database_connection(app) 
     repository = SpaceRepository(connection)        
     repository.get_all_spaces()
     spaces = repository.get_all_spaces()
     return render_template('spaces.html', spaces=spaces)
-
 
 @app.route('/listspace', methods=['GET', 'POST'])
 def list_space():
@@ -118,35 +117,61 @@ def list_space():
         return redirect('/spaces')
     return render_template('listspace.html', form=form)
 
-        
-@app.route('/spaces/<int:id>', methods=['GET'])
-@login_required
-# This route is for showing a specific space
-def show_listing(id):
-    connection = get_flask_database_connection(app)
-    repository = SpaceRepository(connection)
-    space = repository.get_space(id)
-    # valid_dates = [i.isoformat() for i in space.dates_available]                # <<=== still working on a solution for full integration of dates list into calendar
-    return render_template('booking.html', space=space)
 
-@app.route('/spaces/<int:id>', methods=['POST'])
-@login_required
-# This route is for requesting a booking
-def request_booking(id):
+@app.route('/users/<int:current_user_id>/spaces/<int:space_id>', methods=['GET'])
+# @login_required
+# This route is for showing a specific space
+def show_listing(current_user_id, space_id):
+    connection = get_flask_database_connection(app)
+    space_repository = SpaceRepository(connection)
+    space = space_repository.get_space(space_id)
+    space.dates_booked = [i.isoformat() for i in space.dates_booked]
+    return render_template('booking.html', space=space, current_user_id=current_user_id)
+
+
+@app.route('/users/<int:current_user_id>/spaces/<int:space_id>', methods=['POST'])
+# @login_required
+def request_booking(current_user_id, space_id):
     connection = get_flask_database_connection(app)
     space_repository = SpaceRepository(connection)
     request_repository = RequestRepository(connection)
-    space = space_repository.get_space(id)
-    request_sender = 1                                      # <====  current_user.id??  requires login records? -- will need rephrased, but this allows for testing and access in the meantime.
+    space = space_repository.get_space(space_id)
+    request_sender = current_user_id
     space_owner = space.user_id
-    message_content = request.form["request_message"]
     space_requested = space.id
-    dates_requested = request.form["daterange"]
+    message_content = request.form.get("request-message")
+    dates_requested = request.form.get("daterange", "").strip()
+    if not message_content or not dates_requested:
+        return render_template('booking.html', space=space, errors=["All fields are required."]), 400        
+    dates_requested = [datetime.datetime.strptime(date.strip(), "%Y-%m-%d").date() for date in dates_requested.split(' - ')]
     new_request = Request(None, request_sender, space_owner, message_content, space_requested, dates_requested)
-    if not new_request.is_valid():
-        return render_template('booking.html', request=new_request, errors=new_request.generate_errors()), 400
-    request = request_repository.create_request(new_request)
-    return redirect(f"/requests")
+    if new_request.is_valid():
+        new_request = request_repository.create_request(new_request)
+        return redirect(f"/users/{current_user_id}/requests")
+    else:
+        return render_template('booking.html', new_request=new_request, errors=new_request.generate_errors(), space=space, current_user_id=current_user_id), 400
+    
+    
+@app.route('/users/<int:id>/requests', methods=['GET'])
+def view_requests(id):
+    connection = get_flask_database_connection(app)
+    requests_repository = RequestRepository(connection)
+    user_repository = UserRepository(connection)
+    spaces_repository = SpaceRepository(connection)
+    user = user_repository.get_user(id)
+    user_requests = reversed([request for request in requests_repository.get_all_requests_for_user(id)])
+    return render_template('requests.html', user_requests=user_requests, user=user, user_repository=user_repository, spaces_repository=spaces_repository)
+
+@app.route('/users/<int:user_id>/requests/<int:request_id>', methods=['GET'])
+def view_request(user_id, request_id):
+    connection = get_flask_database_connection(app)
+    requests_repository = RequestRepository(connection)
+    user_repository = UserRepository(connection)
+    spaces_repository = SpaceRepository(connection)
+    user = user_repository.get_user(user_id)
+    request = requests_repository.get_request(request_id)
+    return render_template('request.html', user=user, user_repository=user_repository, spaces_repository=spaces_repository, request=request)
+
 
 # GET /index
 # Returns the homepage
