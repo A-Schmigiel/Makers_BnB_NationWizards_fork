@@ -8,7 +8,7 @@
 # -- accepted (bool)
 
 class Request():
-    def __init__(self, id, request_sender, space_owner, message_content, space_requested, dates_requested, accepted = False):
+    def __init__(self, id, request_sender, space_owner, message_content, space_requested, dates_requested, accepted = None):
         self.id = id
         self.request_sender = request_sender
         self.space_owner = space_owner
@@ -33,8 +33,6 @@ class Request():
         if self.space_requested == None or self.space_requested == '':
             return False
         if self.dates_requested == None or self.dates_requested == '':
-            return False
-        if self.accepted == None or self.accepted == '':
             return False
         return True
 

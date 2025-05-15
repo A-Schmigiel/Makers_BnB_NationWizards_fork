@@ -1,4 +1,4 @@
-DROP TABLE IF EXISTS requests;
+DROP TABLE IF EXISTS requests CASCADE;
 DROP SEQUENCE IF EXISTS requests_id_seq;
 
 CREATE SEQUENCE IF NOT EXISTS requests_id_seq;
