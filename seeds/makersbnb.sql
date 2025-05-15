@@ -70,6 +70,7 @@ INSERT INTO spaces (name, description, price_per_night, dates_booked, user_id, u
 --Inserting into the table requests
 INSERT INTO requests (request_sender, space_owner, message_content, space_requested, dates_requested, accepted)
 VALUES
+
     (1, 2, 'Is this available?', 1, ARRAY['2025-06-15', '2025-06-20']::date[], NULL),
     (2, 1, 'Is this pet friendly?', 2, ARRAY['2025-07-01', '2025-07-05']::date[], NULL),
     (1, 1, 'Can I book this?', 1, ARRAY['2025-05-22', '2025-05-24']::date[], NULL),
