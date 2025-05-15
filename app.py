@@ -5,7 +5,7 @@ import datetime
 import calendar
 # helps manage secret key
 from flask_bcrypt import Bcrypt
-from forms import MyForm, ListSpacesForm
+from forms import LogInForm, ListSpacesForm, CreateUserForm
 # repositories
 from lib.spaces_repository import SpaceRepository
 from lib.requests_repository import RequestRepository
@@ -25,6 +25,7 @@ app.config['SECRET_KEY'] = '072bb84cfdff08af0c1d8cd67f3be65bba12485bf0e9ea4dae5a
 bcrypt = Bcrypt(app)
 login_manager = LoginManager()
 login_manager.init_app(app)
+login_manager.login_view = 'login'
 @login_manager.user_loader
 def load_user(user_id):
     connection = get_flask_database_connection(app)
@@ -35,11 +36,12 @@ def load_user(user_id):
 
 @app.route('/', methods=['GET', 'POST'])
 def index():
-    form = MyForm()
+    form = CreateUserForm()
     if form.validate_on_submit():
+        email = form.email.data
         username = form.username.data
-        # email = form.email.data
         password = form.password.data
+        confirm_password = form.confirm_password.data
 
         hashed_password = bcrypt.generate_password_hash(password).decode('utf-8')
 
@@ -53,14 +55,14 @@ def index():
             f'{match_message}'
         )
     
-    return render_template('index.html', form=form)
+    return render_template('spaces.html', form=form)
 
 
 # == LOGIN / LOGOUT ROUTES ==:
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
-    form = MyForm()
+    form = LogInForm()
     if form.validate_on_submit():
         username = form.username.data
         password = form.password.data
@@ -80,17 +82,14 @@ def login():
 def logout():
     connection = get_flask_database_connection(app)
     repository = UserRepository(connection)
-    user = repository.get_user(current_user.id)
-    if user:
-        logout_user()
-        return redirect('/index')
-    else:
-        return render_template('login.html', error="User not found")
+    logout_user()
+    return redirect('/index')
+
 
 # == SPACES/LISTSPACES/REQUESTS ROUTES ==
 
 @app.route('/spaces', methods=['GET'])
-# @login_required
+@login_required
 def get_spaces():
     connection = get_flask_database_connection(app) 
     repository = SpaceRepository(connection)        
@@ -99,9 +98,8 @@ def get_spaces():
     return render_template('spaces.html', spaces=spaces)
 
 @app.route('/listspace', methods=['GET', 'POST'])
+@login_required
 def list_space():
-    if not current_user.is_authenticated:
-        return app.login_manager.unauthorized()
     form = ListSpacesForm()
     if form.validate_on_submit():
         connection = get_flask_database_connection(app)

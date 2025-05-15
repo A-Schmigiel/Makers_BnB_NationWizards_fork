@@ -132,7 +132,7 @@
                         <a class="nav-link disabled" href="index.html">Sign up</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="login.html">Log in</a>
+                        <a class="nav-link" href="{{ url_for ('login') }}">Log in</a>
                     </li>
                 </ul>
             </div>
@@ -145,8 +145,19 @@
             <p class="lead">Find unique places to stay and unforgettable experiences around the world.</p>
             <div class="form-container">
                 <h2 class="text-center mb-4">List Your Space</h2>
-                <form method="POST" action="http://localhost:5001/listspace">
-                    {{ form.csrf_token }}
+                <form method="POST" action="{{ url_for('list_space') }}">
+                  {{ form.csrf_token }}
+                    {% with messages = get_flashed_messages() %}
+                        {% if messages %}
+                            <div class="alert alert-info">
+                                {{ messages[0] }}
+                            </div>
+                        {% endif %}
+                    {% endwith %}
+                    {% for error in form.errors.values() %}
+                        <div class="alert alert-danger">{{ error[0] }}</div>
+                    {% endfor %}
+                    
                     <div class="form-group">
                         <label for="space_name">{{ form.space_name.label }}</label>
                         {{ form.space_name(class="form-control") }}
