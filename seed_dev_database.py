@@ -5,7 +5,4 @@ from lib.database_connection import DatabaseConnection
 
 connection = DatabaseConnection(test_mode=False)
 connection.connect()
-connection.seed("seeds/users.sql")
-# Add your own seed lines below...
-connection.seed("seeds/spaces.sql")
-connection.seed("seeds/requests.sql")
+connection.seed("seeds/makersbnb.sql")
