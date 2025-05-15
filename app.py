@@ -148,7 +148,6 @@ def request_booking(id):
     request = request_repository.create_request(new_request)
     return redirect(f"/requests")
 
-
 # GET /index
 # Returns the homepage
 # Try it:
@@ -156,6 +155,23 @@ def request_booking(id):
 @app.route('/index', methods=['GET'])
 def get_index():
     return render_template('index.html')
+
+
+# POST /user
+# Want to create a new user and add them to the user table
+#   ; open http://localhost:5001/
+@app.route('/index', methods=['POST'])
+def create_user():
+    data = request.get_json()  # Use request.form if you're submitting from a form
+    user = User(
+        username=data['username'],
+        email=data['email'],
+        password=data['password'],
+        confirm_password=data['confirm_password']
+    )
+    users_repo.create_user(user)
+    return '', 200  
+
 
 # These lines start the server if you run this file directly
 # They also start the server configured to use the test database
