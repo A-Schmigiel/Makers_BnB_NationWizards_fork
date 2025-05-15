@@ -17,7 +17,7 @@ def test_create_user(db_connection):
 
 # fail user attempting invalid email
 def test_create_user_invalid_email(db_connection):
-    db_connection.seed("seeds/users.sql")
+    db_connection.seed("seeds/makersbnb.sql")
     repo = UserRepository(db_connection)
 
     new_user = User(None, "newuser", "new.gmail.com", "securepw!", "securepw!")
@@ -27,7 +27,7 @@ def test_create_user_invalid_email(db_connection):
 
 # fail user attempting invalid password
 def test_create_user_invalid_password(db_connection):
-    db_connection.seed("seeds/users.sql")
+    db_connection.seed("seeds/makersbnb.sql")
     repo = UserRepository(db_connection)
 
     new_user = User(None, "newuser", "new@gmail.com", "securepw", "securepw")
@@ -37,7 +37,7 @@ def test_create_user_invalid_password(db_connection):
 
 # fail user mismatch passwords
 def test_create_user_mismatched_passwords(db_connection):
-    db_connection.seed("seeds/users.sql")
+    db_connection.seed("seeds/makersbnb.sql")
     repo = UserRepository(db_connection)
 
     new_user = User(None, "newuser", "new@gmail.com", "securepw", "wrongpw!")

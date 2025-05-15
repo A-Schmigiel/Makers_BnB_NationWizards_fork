@@ -10,6 +10,7 @@ class User():
         self.username = username
         self.email = email
         self.password = password
+        self.confirm_password = confirm_password #added this line
 
     def is_authenticated(self):
         return True
