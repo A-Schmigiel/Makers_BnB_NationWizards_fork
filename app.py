@@ -162,6 +162,8 @@ def get_index():
 #   ; open http://localhost:5001/
 @app.route('/index', methods=['POST'])
 def create_user():
+    connection = get_flask_database_connection(app)
+    repository = SpaceRepository(connection)
     data = request.get_json()  # Use request.form if you're submitting from a form
     user = User(
         username=data['username'],
@@ -169,7 +171,7 @@ def create_user():
         password=data['password'],
         confirm_password=data['confirm_password']
     )
-    users_repo.create_user(user)
+    repository.create_user(user)
     return '', 200  
 
 
