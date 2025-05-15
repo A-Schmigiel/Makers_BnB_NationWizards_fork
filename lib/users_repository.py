@@ -1,4 +1,5 @@
 from lib.user import User
+import re
 
 # parameters:
 # -- id
@@ -14,7 +15,17 @@ class UserRepository():
     def __init__(self, connection):
         self.connection = connection
     
+    def is_valid(self, password):
+        spec_char = ['!', '@', '£', '$', '%', '&']
+        return len(password) > 7 and any(char in password for char in spec_char)
+
     def create_user(self, user):
+        if '@' not in user.email or '.' not in user.email or user.email.endswith('.'):
+            raise ValueError("Please input a valid email")
+        if not self.is_valid(user.password):
+            raise ValueError("Password must be 8 or more characters and contain at least one special character")
+        if user.password != user.confirm_password:
+            raise ValueError("Passwords must match")
         rows = self.connection.execute('INSERT INTO users (username, email, password) VALUES (%s, %s, %s) RETURNING id', [user.username, user.email, user.password])
         row = rows[0]
         user.id = row["id"]
@@ -35,7 +46,20 @@ class UserRepository():
         return User(row["id"], row["username"], row["email"], row["password"])
     
     def remove_user(self, id):
-        self.connection.execute('DELETE FROM users WHERE id = %s', [id])
+        self.connection.execute('DELETE FROM spaces WHERE id = %s', [self.id])
+        return None
+
+
+    def get_user_by_username(self, username):
+        rows = self.connection.execute(
+            "SELECT id, username, email, password FROM users WHERE username = %s",
+            [username]
+        )
+        if not rows:
+            return None
+        row = rows[0]
+        return User(row["id"], row["username"], row["email"], row["password"])
+
 
     # Adding sign in method
     def sign_in(self, email, password):
@@ -46,5 +70,4 @@ class UserRepository():
             return None
         row = rows[0]
         return User(row["id"], row["username"], row["email"], row["password"])
-    
-    
+        
