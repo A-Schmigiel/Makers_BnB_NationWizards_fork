@@ -58,8 +58,8 @@ CREATE TABLE requests (
 -- Inserting into the TABLE
 
 INSERT INTO users (username, email, password) VALUES 
-('john_doe', 'johndoe@gmail.com', 'password123'),
-('jane_doe', 'janedoe@gmail.com', 'password456');
+('john_doe', 'johndoe@gmail.com', '$2b$12$R0zBpJO4u/kNrv7jQFavEesRqXKLFiv1fOhiE2Hb71.9YWZLz3EaG'),
+('jane_doe', 'janedoe@gmail.com', '$2b$12$aoeO/hoKEgaq2i033emYHOIi.gfKsjUZyDkF25b1PtTeU5.VBaH2.');
 
 --Inserting into the table spaces
 
@@ -69,7 +69,7 @@ INSERT INTO spaces (name, description, price_per_night, dates_booked, user_id) V
 --Inserting into the table requests
 INSERT INTO requests (request_sender, space_owner, message_content, space_requested, dates_requested, accepted)
 VALUES
-    (1, 2, 'Is this available?', 1, ARRAY['2025-06-15', '2025-06-20']::date[], FALSE),
-    (2, 1, 'Is this pet friendly?', 2, ARRAY['2025-07-01', '2025-07-05']::date[], TRUE),
-    (1, 1, 'Can I book this?', 1, ARRAY['2025-05-22', '2025-05-24']::date[], FALSE),
+    (1, 2, 'Is this available?', 1, ARRAY['2025-06-15', '2025-06-20']::date[], NULL),
+    (2, 1, 'Is this pet friendly?', 2, ARRAY['2025-07-01', '2025-07-05']::date[], NULL),
+    (1, 1, 'Can I book this?', 1, ARRAY['2025-05-22', '2025-05-24']::date[], NULL),
     (2, 2, 'Is this kid friendly?', 2, ARRAY['2025-06-10', '2025-06-15']::date[], TRUE);
