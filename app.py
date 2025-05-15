@@ -34,28 +34,28 @@ def load_user(user_id):
 
 # == SIGN UP / HOMEPAGE ROUTE ==
 
-@app.route('/', methods=['GET', 'POST'])
-def index():
-    form = CreateUserForm()
-    if form.validate_on_submit():
-        email = form.email.data
-        username = form.username.data
-        password = form.password.data
-        confirm_password = form.confirm_password.data
+# @app.route('/', methods=['GET', 'POST'])
+# def index():
+#     form = CreateUserForm()
+#     if form.validate_on_submit():
+#         email = form.email.data
+#         username = form.username.data
+#         password = form.password.data
+#         confirm_password = form.confirm_password.data
 
-        hashed_password = bcrypt.generate_password_hash(password).decode('utf-8')
+#         hashed_password = bcrypt.generate_password_hash(password).decode('utf-8')
 
-        if bcrypt.check_password_hash(hashed_password, password):
-            match_message = "Password hash matches input password."
-        else:
-            match_message = "Password hash did not match input."
-        return (
-            f'Hello, {username}!<br>'
-            # f'Email: {email}<br>'
-            f'{match_message}'
-        )
+#         if bcrypt.check_password_hash(hashed_password, password):
+#             match_message = "Password hash matches input password."
+#         else:
+#             match_message = "Password hash did not match input."
+#         return (
+#             f'Hello, {username}!<br>'
+#             # f'Email: {email}<br>'
+#             f'{match_message}'
+#         )
     
-    return render_template('spaces.html', form=form)
+#     return render_template('spaces.html', form=form)
 
 
 # == LOGIN / LOGOUT ROUTES ==:
@@ -112,8 +112,33 @@ def list_space():
             user_id=current_user.id
         )
         repository.create_space(space)
+        
         return redirect('/spaces')
     return render_template('listspace.html', form=form)
+
+@app.route('/index', methods=['GET', 'POST'])
+def new_user():
+    form = CreateUserForm()
+    if form.validate_on_submit():
+        connection = get_flask_database_connection(app)
+        repository = UserRepository(connection)
+        hashed_password = bcrypt.generate_password_hash(form.password.data).decode('utf-8')
+        user = User(
+            id=2,
+            email=form.email.data,
+            username=form.username.data,
+            password=hashed_password,
+            confirm_password=hashed_password,
+            user_id=user.id
+            
+        )
+        repository.create_user(user)
+        
+        if user and bcrypt.check_password_hash(hashed_password, form.password.data):
+        
+            login_user(user)
+            return redirect('/spaces')
+    return render_template('index.html', form=form)
 
 @app.route('/users/<int:current_user_id>/spaces/<int:space_id>', methods=['GET'])
 @login_required
@@ -202,19 +227,19 @@ def get_index():
 # POST /user
 # Want to create a new user and add them to the user table
 #   ; open http://localhost:5001/
-@app.route('/index', methods=['POST'])
-def create_user():
-    connection = get_flask_database_connection(app)
-    repository = SpaceRepository(connection)
-    data = request.get_json()  # Use request.form if you're submitting from a form
-    user = User(
-        username=data['username'],
-        email=data['email'],
-        password=data['password'],
-        confirm_password=data['confirm_password']
-    )
-    repository.create_user(user)
-    return '', 200  
+# @app.route('/index', methods=['POST'])
+# def create_user():
+#     connection = get_flask_database_connection(app)
+#     repository = SpaceRepository(connection)
+#     data = request.get_json()  # Use request.form if you're submitting from a form
+#     user = User(
+#         username=data['username'],
+#         email=data['email'],
+#         password=data['password'],
+#         confirm_password=data['confirm_password']
+#     )
+#     repository.create_user(user)
+#     return '', 200  
 
 
 # These lines start the server if you run this file directly

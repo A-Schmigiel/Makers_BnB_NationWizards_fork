@@ -58,8 +58,8 @@ CREATE TABLE requests (
 -- Inserting into the TABLE
 
 INSERT INTO users (username, email, password) VALUES 
-('john_doe', 'johndoe@gmail.com', 'password123'),
-('jane_doe', 'janedoe@gmail.com', 'password456');
+('john_doe', 'johndoe@gmail.com', '$2b$12$R0zBpJO4u/kNrv7jQFavEesRqXKLFiv1fOhiE2Hb71.9YWZLz3EaG'),
+('jane_doe', 'janedoe@gmail.com', '$2b$12$aoeO/hoKEgaq2i033emYHOIi.gfKsjUZyDkF25b1PtTeU5.VBaH2.');
 
 --Inserting into the table spaces
 

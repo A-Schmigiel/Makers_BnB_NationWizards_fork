@@ -74,25 +74,27 @@
 
         <div class="form-container">
           <h2 class="text-center mb-4">Sign up today!</h2>
-          <form>
+          <form method="POST" action="{{ url_for('get_index')}}">
+              {{form.csrf_token}}
             <div class="form-group">
-              <label for="email">Email</label>
-              <input type="text" class="form-control" id="email" placeholder="Enter Email">
+              <label for="email">{{form.email.label}}</label>
+              {{ form.email(class="form-control") }}
             </div>
             <div class="form-group">
-              <label for="username">Username</label>
-              <input type="text" class="form-control" id="username" placeholder="Enter Username">
+              <label for="username">{{form.username.label}}</label>
+              {{ form.username(class="form-control") }}
             </div>
             <div class="form-group">
-              <label for="password_1">Password</label>
-              <input type="password" class="form-control" id="password_1" placeholder="Enter Password">
+              <label for="password_1">{{form.password.label}}</label>
+              {{ form.password(class="form-control") }}
             </div>
             <div class="form-group">
-              <label for="password_2">Confirm Password</label>
-              <input type="password" class="form-control" id="password_2" placeholder="Confirm Password">
+              <label for="password_2">{{form.confirm_password.label}}</label>
+              {{ form.confirm_password(class="form-control") }}
             </div>
-
-            <a href="http://localhost:5001/spaces" class="btn btn-dark mt-3">Sign up</a><br>
+            <div class="form-group">
+                        {{ form.submit(class="btn btn-dark") }}
+            <!-- <a href="http://localhost:5001/spaces" class="btn btn-dark mt-3">Sign up</a><br> -->
             <a href="http://localhost:5001/login" class="link-secondary mt-2 d-block">Already have an account with us? Click here to log in</a>
           </form>
         </div>
