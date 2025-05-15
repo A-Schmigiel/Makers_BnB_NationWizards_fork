@@ -9,19 +9,20 @@ import datetime
 
 
 class Space():
-    def __init__(self, id, name, description, price_per_night, user_id, dates_booked = []):
+    def __init__(self, id, name, description, price_per_night, user_id, upload_image, dates_booked = []):
         self.id = id
         self.name = name
         self.description = description
         self.price_per_night = price_per_night
         self.user_id = user_id
         self.dates_booked = dates_booked
+        self.upload_image = upload_image
     
     def __eq__(self, value):
         return self.__dict__ == value.__dict__
     
     def __repr__(self):
-        return f"space({self.id}, {self.name}, {self.description}, {self.price_per_night}, {self.user_id}, {self.dates_booked})"
+        return f"space({self.id}, {self.name}, {self.description}, {self.price_per_night}, {self.user_id}, {self.upload_image}, {self.dates_booked})"
     
     def is_valid(self):
         if self.name == None or self.name == "":
@@ -31,6 +32,8 @@ class Space():
         if self.price_per_night == None or self.price_per_night == '':
             return False
         if self.user_id == None or self.user_id == '':
+            return False
+        if self.upload_image == None or self.upload_image == '':
             return False
         if not self.dates_booked: # changed this
             return False
@@ -46,6 +49,8 @@ class Space():
             errors.append("Price per night can't be blank")
         if self.user_id == None or self.user_id == '':
             errors.append("User ID can't be blank")
+        if self.upload_image == None or self.upload_image == '':
+            errors.append("Upload image can't be blank")
         if not self.dates_booked: # changed this
             errors.append("Dates Booked can't be blank")
         if len(errors) == 0:
