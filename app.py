@@ -111,7 +111,7 @@ def list_space():
             description=form.space_description.data,
             price_per_night=form.space_price_per_night.data,
             user_id=current_user.id,
-            upload_image="placeholder" # change this when doing HTML input
+            upload_image=form.space_upload_image.data # change this when doing HTML input
         )
         repository.create_space(space)
         
