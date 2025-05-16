@@ -5,15 +5,11 @@ from playwright.sync_api import Page, expect
 """
 We can render the index page
 """
-# def test_get_index(page, test_web_address):
+def test_get_index(page, test_web_address):
 #     # We load a virtual browser and navigate to the /index page
-#     page.goto(f"http://{test_web_address}/index")
-
-#     # We look at the <p> tag
-#     p_tag = page.locator("p")
-
-#     # We assert that it has the text "This is the homepage."
-#     expect(p_tag).to_have_text("This is the homepage.")
+    page.goto(f"http://{test_web_address}/index")
+    assert page.title() == "WizardBnB"  
+    assert "Sign up" in page.content()  
 
 #===TESTS FOR /SPACES===
 """
@@ -67,22 +63,6 @@ def test_login_success(test_web_address, page, web_client, db_connection): # <- 
     )
     assert response.status_code == 200
 
-#Invalid login tests
-
-# def test_login_failure(web_client, db_connection):
-#     # Seed the database with a known user
-#     db_connection.seed("seeds/makersbnb.sql")
-
-#     # Attempt to log in with an incorrect password
-#     response = web_client.post(
-#         "/login",
-#         data={"username": "john_doe", "password": "wrongpassword"},
-#         follow_redirects=True,
-#     )
-
-#     # Check that the login failed gracefully
-#     assert response.status_code == 200  # Should stay on login page
-#     assert b"Invalid credentials" in response.data
     
 # ##===TESTS FOR /LOGOUT===
 def test_logout_success(web_client, db_connection):
