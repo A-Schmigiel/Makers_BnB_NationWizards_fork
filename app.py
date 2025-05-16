@@ -89,13 +89,14 @@ def logout():
 # == SPACES/LISTSPACES/REQUESTS ROUTES ==
 
 @app.route('/spaces', methods=['GET'])
-@login_required
+# @login_required
 def get_spaces():
     connection = get_flask_database_connection(app) 
     repository = SpaceRepository(connection)        
     repository.get_all_spaces()
     spaces = repository.get_all_spaces()
     return render_template('spaces.html', spaces=spaces)
+
 
 @app.route('/listspace', methods=['GET', 'POST'])
 @login_required
@@ -116,6 +117,7 @@ def list_space():
         
         return redirect('/spaces')
     return render_template('listspace.html', form=form)
+
 
 @app.route('/index', methods=['GET', 'POST'])
 def new_user():
@@ -140,6 +142,7 @@ def new_user():
             login_user(user)
             return redirect('/spaces')
     return render_template('index.html', form=form)
+
 
 @app.route('/users/<int:current_user_id>/spaces/<int:space_id>', methods=['GET'])
 @login_required
@@ -185,35 +188,40 @@ def view_requests(id):
     user_requests = reversed([request for request in requests_repository.get_all_requests_for_user(id)])
     return render_template('requests.html', user_requests=user_requests, user=user, user_repository=user_repository, spaces_repository=spaces_repository)
 
+
 @app.route('/users/<int:user_id>/requests/<int:request_id>', methods=['GET'])
 @login_required
 def view_request(user_id, request_id):
     connection = get_flask_database_connection(app)
-    requests_repository = RequestRepository(connection)
+    request_repository = RequestRepository(connection)
     user_repository = UserRepository(connection)
-    spaces_repository = SpaceRepository(connection)
+    space_repository = SpaceRepository(connection)
     user = user_repository.get_user(user_id)
-    show_request = requests_repository.get_request(request_id)
-    dates_requested = request.form.get("daterange", "").strip()
-    return render_template('request.html', user=user, user_repository=user_repository, spaces_repository=spaces_repository, request=show_request)
+    show_request = request_repository.get_request(request_id)
+    dates = [i.strftime("%d %B of %Y") for i in show_request.dates_requested]
+    date_range = f"From {dates[0]} until {dates[1]}"
+    total_cost = len(request_repository.get_all_booked_nights(show_request.dates_requested)) * (space_repository.get_space(show_request.space_requested)).price_per_night
+    return render_template('request.html', user=user, user_repository=user_repository, space_repository=space_repository, request=show_request, dates=date_range, total_cost=total_cost)
+
 
 @app.route('/users/<int:user_id>/requests/<int:request_id>', methods=['POST'])
 @login_required
 def approve_or_deny_request(user_id, request_id):
     connection = get_flask_database_connection(app)
-    requests_repository = RequestRepository(connection)
+    request_repository = RequestRepository(connection)
     user_repository = UserRepository(connection)
-    spaces_repository = SpaceRepository(connection)
+    space_repository = SpaceRepository(connection)
     user = user_repository.get_user(user_id)
-    show_request = requests_repository.get_request(request_id)
+    show_request = request_repository.get_request(request_id)
+    space = space_repository.get_space(show_request.space_requested)
     if 'approve_button' in request.form:
-        requests_repository.approve_request(show_request)
+        request_repository.approve_request(show_request)
+        all_nights = request_repository.get_all_booked_nights(show_request.dates_requested)
+        space_repository.book_space(space.id, all_nights)
+        # request_repository.decline_conflicting_dates(space.id, all_nights)
     elif 'deny_button' in request.form:
-        requests_repository.deny_request(show_request)
+        request_repository.deny_request(show_request)
     return redirect(f"/users/{user.id}/requests")
-
-
-    # return render_template('request.html', user=user, user_repository=user_repository, spaces_repository=spaces_repository, request=request)
 
 
 # GET /index

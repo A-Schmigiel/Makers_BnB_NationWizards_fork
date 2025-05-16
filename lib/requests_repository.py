@@ -52,3 +52,20 @@ class RequestRepository():
     def deny_request(self, request):
         self.connection.execute('UPDATE requests SET accepted = False WHERE id = %s', [request.id])
         return None
+    
+    def get_all_booked_nights(self, dates_range):
+        start_date = dates_range[0]
+        end_date = dates_range[1]
+        all_nights_requested = []
+        td=datetime.timedelta(days=1)
+        while start_date <= end_date:
+            all_nights_requested.append(start_date.isoformat())
+            start_date += td
+        all_nights_requested.pop(-1)
+        return all_nights_requested
+
+    # def decline_conflicting_dates(self, space_id, nights_booked):
+    #     # nights_booked = ['2025-05-20','2025-05-22']
+    #     for date in nights_booked:
+    #         self.connection.execute(
+    #             "UPDATE requests set accepted = FALSE WHERE accepted ISNULL AND space_requested = %s AND DATE %s = ANY (dates_requested)", [1, str(date)])
