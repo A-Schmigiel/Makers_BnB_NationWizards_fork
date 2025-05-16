@@ -61,12 +61,12 @@
         {% for space in spaces %}
         <div class="col-sm-6">
           <div class="card">
-            <img src="https://thermohouse.co.uk/wp-content/uploads/2019/04/hero-image.jpg" class="card-img-top" alt="...">
+            <img src="{{ space.upload_image }}" class="card-img-top" alt="...">
             <div class="card-body">
               <h5 class="card-title">{{ space.name }}</h5>
               <p class="card-text">{{ space.description }}</p>
               <p class="card-text">£{{ space.price_per_night }} per night</p>
-              <a href="/users/{{current_user.id}}/spaces/{{space.id}}" class="btn btn-primary">Book now</a>
+              <a href="/users/{{current_user.id}}/spaces/{{space.id}}" class="btn btn-secondary">Book now</a>
             </div>
           </div>
         </div>
