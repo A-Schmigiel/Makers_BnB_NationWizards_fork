@@ -45,8 +45,8 @@ class SpaceRepository():
         self.connection.execute('DELETE FROM spaces WHERE id = %s', [id])
         return None
 
-    def book_space(self, id, new_date_booking):
-        current = self.connection.execute('SELECT dates_booked FROM spaces WHERE id = %s', [id])[0]['dates_booked']
-        updated = current + [new_date_booking]
+    def book_space(self, id, new_dates_booked):
+        current = [date.isoformat() for date in (self.get_space(id)).dates_booked]
+        updated = sorted(current + new_dates_booked)
         self.connection.execute('UPDATE spaces SET dates_booked = %s WHERE id = %s', [updated, id])
-    
+
