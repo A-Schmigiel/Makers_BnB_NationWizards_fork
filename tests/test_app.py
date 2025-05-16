@@ -33,19 +33,21 @@ def test_get_spaces(test_web_address, page, db_connection):
     
 #===TESTS FOR /LISTSPACE===
 
-# def test_list_spaces_success(web_client, db_connection):
-#     db_connection.seed("seeds/makersbnb.sql")
+def test_list_spaces_success(web_client, db_connection):
+    db_connection.seed("seeds/makersbnb.sql")
 
-#     login_response = web_client.post(
-#         "/login",
-#         data={"username": "john_doe", "password": "password123"},
-#         follow_redirects=True,
-#     )
+    # Log in
+    login_response = web_client.post(
+        "/login",
+        data={"username": "john_doe", "password": "password123"},
+        follow_redirects=True,
+    )
+    assert login_response.status_code == 200
 
-#     print(login_response.data.decode())  # See if it contains login errors
-
-#     assert login_response.status_code == 200
-#     assert b"Spaces" in login_response.data
+    # # Access /listspace
+    # response = web_client.get("/listspace")
+    # assert response.status_code == 200
+    # assert b"Spaces" in login_response.data 
 
 #===TESTS FOR /LOGIN===
 """
